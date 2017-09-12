@@ -1,13 +1,9 @@
 
 package parliament2profile;
 
-import java.util.HashMap;
-import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -17,41 +13,67 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 })
 public class Parliament {
 
+    /**
+     * The name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("name")
-    private String name;
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String name = "Bremen";
+    /**
+     * The uuid schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("uuid")
-    private String uuid;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String uuid = "1764827c-4a36-40f5-a6f0-5c368a40f217";
 
+    /**
+     * The name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("name")
     public String getName() {
         return name;
     }
 
+    /**
+     * The name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("name")
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * The uuid schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("uuid")
     public String getUuid() {
         return uuid;
     }
 
+    /**
+     * The uuid schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("uuid")
     public void setUuid(String uuid) {
         this.uuid = uuid;
-    }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }

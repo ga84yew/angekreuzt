@@ -79,9 +79,9 @@ public class Klient {
 		String s=this.q.getAnswers().get(0).getSummary();
 		
 		return
-		(SpeechHelper.wrapInSpeak("Hello,"+ SpeechHelper.createBreak(1) 
+		(SpeechHelper.wrapInSpeak("Hallo "+ SpeechHelper.createBreak(1) 
 		+firstname +" "+lastname
-		+" has an opinion concerning " +category 
+		+" hat eine Meinung zum Thema " +category 
 		+ SpeechHelper.createBreak(1) 
 		+s
 		));
@@ -92,6 +92,6 @@ public class Klient {
 	public String noAnswerfromKlient(){
 		return (SpeechHelper.wrapInSpeak("Hello,"+ SpeechHelper.createBreak(1) 
 		+firstname +" "+lastname
-		+" has not answered to " +this.category));
+		+" hat das Thema " +this.category+" nicht beantwortet."));
 	}
 }

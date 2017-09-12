@@ -8,9 +8,12 @@
     or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
@@ -21,7 +24,9 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 
+import org.apache.commons.io.FileUtils;
 import org.glassfish.jersey.client.ClientConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,166 +43,193 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.SsmlOutputSpeech;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import parliament2profile.*;
 
 /**
- * This sample shows how to create a simple speechlet for handling speechlet requests.
+ * This sample shows how to create a simple speechlet for handling speechlet
+ * requests.
  */
 public class ThreeQMSpeechlet implements Speechlet {
-	
-	List<String> categories_list;
-	Parliament2Profile Bundestag;
-	
+	// Attribs
+	List<String> categoriesList;
+	Parliament2Profile bundestagsProfile;
+	Parliament paulskirche;
 	private static final Logger log = LoggerFactory.getLogger(ThreeQMSpeechlet.class);
-    private String chosen_category;     public void setChosen_category(String cat){chosen_category=cat; String candidates;}
-    
-    String getDataUrl1;
-    String getDataUrl2;
-    
-	public ThreeQMSpeechlet(){
-		
-	//set categories_list from constant list and jsonString from remote URL	
 
-	String[] categories={"Arbeit","Integration", "Sicherheit", "Aussenpolitik","Finanzen","Bildung"};
-    this.categories_list = Arrays.asList(categories); 
-    
-    Client client = ClientBuilder.newClient( new ClientConfig() ); //String category = "sport";
-	WebTarget webTarget = client.target("https://www.abgeordnetenwatch.de/api/parliament/Bundestag/candidates.json");
-	Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
-	Response response = invocationBuilder.get();
-	Parliament2Profile Bundestag = response.readEntity(Parliament2Profile.class);
-	
-	//set format for URL String
-	this.getDataUrl1 ="https://www.abgeordnetenwatch.de/api/profile/" ;
-	//+angela-merkel+
-	this.getDataUrl2="/profile.json";
+	public void setChosenCategory(String cat) {
+		chosenCategory = cat;
+		String candidates;
 	}
-   
-    
-    @Override
-    public void onSessionStarted(final SessionStartedRequest request, final Session session){    }
 
-    //SpeechletResponse onLaunch
-    @Override
-    public SpeechletResponse onLaunch(final LaunchRequest request, final Session session){    return null;   }
+	private String chosenCategory, getDataUrl1, getDataUrl2;
 
-    //SpeechletResponse onIntent
-    @Override
-    public SpeechletResponse onIntent(final IntentRequest request, final Session session)
-            throws SpeechletException {
-        log.info("onIntent requestId={}, sessionId={}", request.getRequestId(),
-                session.getSessionId());
+	public ThreeQMSpeechlet() throws URISyntaxException, JsonParseException, JsonMappingException, IOException {
 
-        // get Values from Alexa
-        Intent getData = request.getIntent();
-        String intent_name= getData.getName();
-        System.out.println(intent_name);        
-        
-        String content_of_category = getData.getSlot("category").getValue();
-		String content_of_firstname = getData.getSlot("vorname").getValue();
-		String content_of_lastname = getData.getSlot("nachname").getValue();
+		// define Parliament
+		Parliament paulskirche = new Parliament();
+		paulskirche.setName("Hamburg");
 
-		 // local value strings for output to Alexa
-        SsmlOutputSpeech text =new SsmlOutputSpeech(); 
-        text.setSsml("Text not set"); //dummy
-        String set; //string for input to Alexa
-        
-        
+		// set categoriesList from constant list and jsonString from remote URL
+		String[] categories = { "Arbeit", "Integration", "Sicherheit", "Aussenpolitik", "Finanzen", "Bildung" };
+		this.categoriesList = Arrays.asList(categories);
+
+		// JSON from file to Object
+		File f = new File("profiles.json");
+		FileUtils.copyURLToFile(new URL("https://www.abgeordnetenwatch.de/api/parliament/hamburg/profiles.json"), f);
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.enable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
+		mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+		Parliament2Profile bundestagsProfile = mapper.readValue(f, Parliament2Profile.class);
+
+		// set format for URL String
+		this.getDataUrl1 = "https://www.abgeordnetenwatch.de/api/profile/";
+		// +angela-merkel+
+		this.getDataUrl2 = "/profile.json";
+	}
+
+	@Override
+	public void onSessionStarted(final SessionStartedRequest request, final Session session) {
+	}
+
+	// SpeechletResponse onLaunch
+	@Override
+	public SpeechletResponse onLaunch(final LaunchRequest request, final Session session) {
+		return null;
+	}
+
+	// SpeechletResponse onIntent
+	public SpeechletResponse onIntent(final IntentRequest request, final Session session) throws SpeechletException {//
+		//request and session
+		log.info("onIntent requestId={}, sessionId={}",
+		request.getRequestId(),
+		session.getSessionId());
+
+		// get Values from Alexa
+		
+		Intent getData = request.getIntent(); String intent_name=
+		getData.getName(); System.out.println(intent_name);
+		
+		String contentOfCategory = "Familie";
+		String contentOfFirstname = bundestagsProfile.getProfiles().get(0).getPersonal().getFirstName();
+		String contentOfLastname = bundestagsProfile.getProfiles().get(0).getPersonal().getLastName();
+		/*
+		 * String contentOfCategory = getData.getSlot("category").getValue();
+		 * String contentOfFirstname = getData.getSlot("vorname").getValue();
+		 * String contentOfLastname = getData.getSlot("nachname").getValue();
+		 */
+		// local value strings for output to Alexa including dummy texts
+		SsmlOutputSpeech text = new SsmlOutputSpeech();	text.setSsml(SpeechHelper.wrapInSpeak("Text not set")); 
+		String set=new String("Text not set"); // string for input into setSsml()
+
+		//call to define text
 		try {
-			
-			// correct category?
-			if (categories_list.contains(content_of_category)){
-				
-				// get correct Profile p
-				ListIterator<Profile> it = Bundestag.getProfiles().listIterator();
-				Profile p;
-				
-				while (it.hasNext()){
-					p =it.next();
-					if (p.getPersonal().getFirstName().equals(content_of_firstname) && p.getPersonal().getLastName().equals(content_of_lastname )){
-						break;
-					}
-					
-					// profile not found
-					if (!it.hasNext()){
-						set = SpeechHelper.wrapInSpeak(wrongname(content_of_firstname +"-"+ content_of_lastname));
-					}
+			set = setText(contentOfCategory, contentOfFirstname, contentOfLastname);
+		} catch (IOException e) {e.printStackTrace();}
+		System.out.println(set);
+		
+		//set text
+		text.setSsml(set);
+
+		// output to alexa
+		SpeechletResponse r = new SpeechletResponse();
+		r.setOutputSpeech(text);
+		return r;
+	}
+
+	private String setText(String contentOfCategory, String contentOfFirstname, String contentOfLastname)
+			throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
+		String set;
+
+		// correct category?
+		if (categoriesList.contains(contentOfCategory)) {
+
+			// get correct Profile p
+			ListIterator<Profile> it = bundestagsProfile.getProfiles().listIterator();
+			Profile p;
+
+			while (it.hasNext()) {
+				p = it.next();
+
+				if (p.getPersonal().getFirstName().equals(contentOfFirstname)
+						&& p.getPersonal().getLastName().equals(contentOfLastname)) {
+					break; // profile found
 				}
-				
-				//create URL string from format and name
-				String getDataUrl = getDataUrl1+content_of_firstname +"-"+ content_of_lastname+getDataUrl2;	
-				Klient k= new Klient();
-				set= k.getData(content_of_category,getDataUrl, this);	
 
-				// category not possible
-			}else{
-			set =SpeechHelper.wrapInSpeak( wrongcategory(content_of_category) );	
-
+				// profile not found
+				if (!it.hasNext()) {
+					return SpeechHelper.wrapInSpeak(wrongname(contentOfFirstname + "-" + contentOfLastname));
+				}
 			}
 
-			// set output text for Alexa
-			text.setSsml(set);
-			
-		//catch blocks
-		} catch (JsonParseException e) {e.printStackTrace();
-		} catch (JsonMappingException e) {e.printStackTrace();
-		} catch (MalformedURLException e) {e.printStackTrace();
-		} catch (IOException e) {e.printStackTrace();}
-        
-		//output to alexa
-        SpeechletResponse r = new SpeechletResponse ();
-        r.setOutputSpeech(text);
-		return r;
-    }
+			// create URL string from format and name
+			String getDataUrl = getDataUrl1 + contentOfFirstname + "-" + contentOfLastname + getDataUrl2;
+			System.out.println(getDataUrl);
+			Klient k = new Klient();
+			set = k.getData(contentOfCategory, getDataUrl, this);
 
-	
-	public boolean noAnswer( ) {//called by client to check if Speechhelper wants to create an alternative Answer
-	return false;		
+			// category not possible
+		} else {
+			set = SpeechHelper.wrapInSpeak(wrongcategory(contentOfCategory));
+		}
+		return set;
 	}
-	
-	public String alternativeAnswerfromSpeechelper( ) {//called by client to get an alternative Answer
-	return "alternative Answer Dummy";		
+
+	public boolean noAnswer() {// called by client to check if Speechhelper
+								// wants to create an alternative Answer
+		return false;
 	}
-	
-	public String wrongname(String fullname){
-		return fullname+"not found in Database";
+
+	public String alternativeAnswerfromSpeechelper() {// called by client to get
+														// an alternative Answer
+		return "alternative Answer Dummy";
 	}
-	public String wrongcategory(String category){
-		return category+"not found in Database";
+
+	public String wrongname(String fullname) {
+		return fullname + " wurde leider in der Datebank des Parlaments" + paulskirche.getName() + " nicht gefunden.";
 	}
-	
-	
-    // onSessionEnded
-    @Override
-    public void onSessionEnded(final SessionEndedRequest request, final Session session)
-            throws SpeechletException {
-        /*log.info("onSessionEnded requestId={}, sessionId={}", request.getRequestId(),
-                session.getSessionId());*/
-        // any cleanup logic goes here
-    }
 
-    /**
-     * Creates and returns a {@code SpeechletResponse} with a welcome message.
-     *
-     * @return SpeechletResponse spoken and visual response for the given intent
-     */
-    private SpeechletResponse getWelcomeResponse() {   	return null;    }
+	public String wrongcategory(String category) {
+		return category + " wurde leider in der Themen-Datebank nicht gefunden.";
+	}
 
-    /**
-     * Creates a {@code SpeechletResponse} for the hello intent.
-     *
-     * @return SpeechletResponse spoken and visual response for the given intent
-     */
-    private SpeechletResponse getHelloResponse() {    	return null;    }
+	// onSessionEnded
+	@Override
+	public void onSessionEnded(final SessionEndedRequest request, final Session session) throws SpeechletException {
+		/*
+		 * log.info("onSessionEnded requestId={}, sessionId={}",
+		 * request.getRequestId(), session.getSessionId());
+		 */
+		// any cleanup logic goes here
+	}
 
-    /**
-     * Creates a {@code SpeechletResponse} for the help intent.
-     *
-     * @return SpeechletResponse spoken and visual response for the given intent
-     */
-    private SpeechletResponse getHelpResponse() {    	return null;    }
+	/**
+	 * Creates and returns a {@code SpeechletResponse} with a welcome message.
+	 *
+	 * @return SpeechletResponse spoken and visual response for the given intent
+	 */
+	private SpeechletResponse getWelcomeResponse() {
+		return null;
+	}
 
+	/**
+	 * Creates a {@code SpeechletResponse} for the hello intent.
+	 *
+	 * @return SpeechletResponse spoken and visual response for the given intent
+	 */
+	private SpeechletResponse getHelloResponse() {
+		return null;
+	}
 
-	
+	/**
+	 * Creates a {@code SpeechletResponse} for the help intent.
+	 *
+	 * @return SpeechletResponse spoken and visual response for the given intent
+	 */
+	private SpeechletResponse getHelpResponse() {
+		return null;
+	}
 }
