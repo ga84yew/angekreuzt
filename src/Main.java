@@ -9,10 +9,14 @@
  */
 
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 
 import com.amazon.speech.speechlet.lambda.SpeechletRequestStreamHandler;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 /**
  * This class could be the handler for an AWS Lambda function powering an Alexa Skills Kit
@@ -32,7 +36,7 @@ public final class Main extends SpeechletRequestStreamHandler {
         supportedApplicationIds.add("amzn1.ask.skill.2efc8595-2cb4-488f-b942-971902efcd4f");
     }
 
-    public Main() {
+    public Main() throws JsonParseException, JsonMappingException, URISyntaxException, IOException {
         super(new ThreeQMSpeechlet(), supportedApplicationIds);
     }
 }

@@ -1,82 +1,53 @@
 
 package parliament2profile;
 
-import java.util.HashMap;
-import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "meta",
-    "personal",
-    "party",
-    "parliament",
+    "committees",
     "constituency",
     "list",
-    "committees"
+    "meta",
+    "parliament",
+    "party",
+    "personal"
 })
 public class Profile {
 
-    @JsonProperty("meta")
-    private Meta meta;
-    @JsonProperty("personal")
-    private Personal personal;
-    @JsonProperty("party")
-    private String party;
-    @JsonProperty("parliament")
-    private Parliament parliament;
+    @JsonProperty("committees")
+    private java.util.List<Object> committees = null;
     @JsonProperty("constituency")
     private Constituency constituency;
     @JsonProperty("list")
     private parliament2profile.List list;
+    @JsonProperty("meta")
+    private Meta meta;
+    @JsonProperty("parliament")
+    private Parliament parliament;
+    /**
+     * The party schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("party")
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String party = "FDP";
+    @JsonProperty("personal")
+    private Personal personal;
+
     @JsonProperty("committees")
-    private java.util.List<Object> committees = null;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-
-    @JsonProperty("meta")
-    public Meta getMeta() {
-        return meta;
+    public java.util.List<Object> getCommittees() {
+        return committees;
     }
 
-    @JsonProperty("meta")
-    public void setMeta(Meta meta) {
-        this.meta = meta;
-    }
-
-    @JsonProperty("personal")
-    public Personal getPersonal() {
-        return personal;
-    }
-
-    @JsonProperty("personal")
-    public void setPersonal(Personal personal) {
-        this.personal = personal;
-    }
-
-    @JsonProperty("party")
-    public String getParty() {
-        return party;
-    }
-
-    @JsonProperty("party")
-    public void setParty(String party) {
-        this.party = party;
-    }
-
-    @JsonProperty("parliament")
-    public Parliament getParliament() {
-        return parliament;
-    }
-
-    @JsonProperty("parliament")
-    public void setParliament(Parliament parliament) {
-        this.parliament = parliament;
+    @JsonProperty("committees")
+    public void setCommittees(java.util.List<Object> committees) {
+        this.committees = committees;
     }
 
     @JsonProperty("constituency")
@@ -99,24 +70,56 @@ public class Profile {
         this.list = list;
     }
 
-    @JsonProperty("committees")
-    public java.util.List<Object> getCommittees() {
-        return committees;
+    @JsonProperty("meta")
+    public Meta getMeta() {
+        return meta;
     }
 
-    @JsonProperty("committees")
-    public void setCommittees(java.util.List<Object> committees) {
-        this.committees = committees;
+    @JsonProperty("meta")
+    public void setMeta(Meta meta) {
+        this.meta = meta;
     }
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+    @JsonProperty("parliament")
+    public Parliament getParliament() {
+        return parliament;
     }
 
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
+    @JsonProperty("parliament")
+    public void setParliament(Parliament parliament) {
+        this.parliament = parliament;
+    }
+
+    /**
+     * The party schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("party")
+    public String getParty() {
+        return party;
+    }
+
+    /**
+     * The party schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("party")
+    public void setParty(String party) {
+        this.party = party;
+    }
+
+    @JsonProperty("personal")
+    public Personal getPersonal() {
+        return personal;
+    }
+
+    @JsonProperty("personal")
+    public void setPersonal(Personal personal) {
+        this.personal = personal;
     }
 
 }

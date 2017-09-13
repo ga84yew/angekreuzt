@@ -1,57 +1,79 @@
 
 package parliament2profile;
 
-import java.util.HashMap;
-import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "url",
-    "copyright"
+    "copyright",
+    "url"
 })
 public class Picture {
 
-    @JsonProperty("url")
-    private String url;
+    /**
+     * The copyright schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("copyright")
-    private String copyright;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String copyright = "";
+    /**
+     * The url schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("url")
-    public String getUrl() {
-        return url;
-    }
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String url = "https://www.abgeordnetenwatch.de/sites/abgeordnetenwatch.de/files/users/f01a6977.jpg";
 
-    @JsonProperty("url")
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
+    /**
+     * The copyright schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("copyright")
     public String getCopyright() {
         return copyright;
     }
 
+    /**
+     * The copyright schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("copyright")
     public void setCopyright(String copyright) {
         this.copyright = copyright;
     }
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+    /**
+     * The url schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("url")
+    public String getUrl() {
+        return url;
     }
 
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
+    /**
+     * The url schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("url")
+    public void setUrl(String url) {
+        this.url = url;
     }
 
 }

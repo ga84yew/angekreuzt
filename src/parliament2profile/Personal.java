@@ -1,144 +1,265 @@
 
 package parliament2profile;
 
-import java.util.HashMap;
-import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "degree",
-    "first_name",
-    "last_name",
-    "gender",
     "birthyear",
+    "degree",
     "education",
-    "profession",
     "email",
-    "twitter",
+    "first_name",
+    "gender",
+    "last_name",
     "location",
-    "picture"
+    "picture",
+    "profession",
+    "twitter"
 })
 public class Personal {
 
-    @JsonProperty("degree")
-    private Object degree;
-    @JsonProperty("first_name")
-    private String firstName;
-    @JsonProperty("last_name")
-    private String lastName;
-    @JsonProperty("gender")
-    private String gender;
+    /**
+     * The birthyear schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("birthyear")
-    private String birthyear;
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String birthyear = "1967";
+    /**
+     * The degree schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("degree")
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String degree = "Dr. Dr.";
+    /**
+     * The education schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("education")
-    private String education;
-    @JsonProperty("profession")
-    private Object profession;
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private Object education = null;
+    /**
+     * The email schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("email")
-    private Object email;
-    @JsonProperty("twitter")
-    private Object twitter;
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private Object email = null;
+    /**
+     * The first_name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("first_name")
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String firstName = "Magnus";
+    /**
+     * The gender schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("gender")
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String gender = "male";
+    /**
+     * The last_name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("last_name")
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String lastName = "Buhlert";
     @JsonProperty("location")
     private Location location;
     @JsonProperty("picture")
     private Picture picture;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    /**
+     * The profession schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("profession")
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String profession = "Baudirektor";
+    /**
+     * The twitter schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("twitter")
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private Object twitter = null;
 
-    @JsonProperty("degree")
-    public Object getDegree() {
-        return degree;
-    }
-
-    @JsonProperty("degree")
-    public void setDegree(Object degree) {
-        this.degree = degree;
-    }
-
-    @JsonProperty("first_name")
-    public String getFirstName() {
-        return firstName;
-    }
-
-    @JsonProperty("first_name")
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    @JsonProperty("last_name")
-    public String getLastName() {
-        return lastName;
-    }
-
-    @JsonProperty("last_name")
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    @JsonProperty("gender")
-    public String getGender() {
-        return gender;
-    }
-
-    @JsonProperty("gender")
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
+    /**
+     * The birthyear schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("birthyear")
     public String getBirthyear() {
         return birthyear;
     }
 
+    /**
+     * The birthyear schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("birthyear")
     public void setBirthyear(String birthyear) {
         this.birthyear = birthyear;
     }
 
+    /**
+     * The degree schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("degree")
+    public String getDegree() {
+        return degree;
+    }
+
+    /**
+     * The degree schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("degree")
+    public void setDegree(String degree) {
+        this.degree = degree;
+    }
+
+    /**
+     * The education schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("education")
-    public String getEducation() {
+    public Object getEducation() {
         return education;
     }
 
+    /**
+     * The education schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("education")
-    public void setEducation(String education) {
+    public void setEducation(Object education) {
         this.education = education;
     }
 
-    @JsonProperty("profession")
-    public Object getProfession() {
-        return profession;
-    }
-
-    @JsonProperty("profession")
-    public void setProfession(Object profession) {
-        this.profession = profession;
-    }
-
+    /**
+     * The email schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("email")
     public Object getEmail() {
         return email;
     }
 
+    /**
+     * The email schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("email")
     public void setEmail(Object email) {
         this.email = email;
     }
 
-    @JsonProperty("twitter")
-    public Object getTwitter() {
-        return twitter;
+    /**
+     * The first_name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("first_name")
+    public String getFirstName() {
+        return firstName;
     }
 
-    @JsonProperty("twitter")
-    public void setTwitter(Object twitter) {
-        this.twitter = twitter;
+    /**
+     * The first_name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("first_name")
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * The gender schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("gender")
+    public String getGender() {
+        return gender;
+    }
+
+    /**
+     * The gender schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("gender")
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    /**
+     * The last_name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("last_name")
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * The last_name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("last_name")
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     @JsonProperty("location")
@@ -161,14 +282,48 @@ public class Personal {
         this.picture = picture;
     }
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+    /**
+     * The profession schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("profession")
+    public String getProfession() {
+        return profession;
     }
 
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
+    /**
+     * The profession schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("profession")
+    public void setProfession(String profession) {
+        this.profession = profession;
+    }
+
+    /**
+     * The twitter schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("twitter")
+    public Object getTwitter() {
+        return twitter;
+    }
+
+    /**
+     * The twitter schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("twitter")
+    public void setTwitter(Object twitter) {
+        this.twitter = twitter;
     }
 
 }

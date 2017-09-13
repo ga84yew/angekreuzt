@@ -1,122 +1,239 @@
 
 package parliament2profile;
 
-import java.util.HashMap;
-import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "status",
-    "edited",
-    "uuid",
-    "username",
-    "questions",
     "answers",
-    "url"
+    "edited",
+    "questions",
+    "status",
+    "url",
+    "username",
+    "uuid"
 })
 public class Meta {
 
-    @JsonProperty("status")
-    private String status;
-    @JsonProperty("edited")
-    private String edited;
-    @JsonProperty("uuid")
-    private String uuid;
-    @JsonProperty("username")
-    private String username;
-    @JsonProperty("questions")
-    private Integer questions;
+    /**
+     * The answers schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("answers")
-    private Integer answers;
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private Integer answers = 1;
+    /**
+     * The edited schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("edited")
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String edited = "2015-04-20 07:51";
+    /**
+     * The questions schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("questions")
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private Integer questions = 1;
+    /**
+     * The status schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("status")
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String status = "1";
+    /**
+     * The url schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("url")
-    private String url;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-
-    @JsonProperty("status")
-    public String getStatus() {
-        return status;
-    }
-
-    @JsonProperty("status")
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    @JsonProperty("edited")
-    public String getEdited() {
-        return edited;
-    }
-
-    @JsonProperty("edited")
-    public void setEdited(String edited) {
-        this.edited = edited;
-    }
-
-    @JsonProperty("uuid")
-    public String getUuid() {
-        return uuid;
-    }
-
-    @JsonProperty("uuid")
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String url = "https://www.abgeordnetenwatch.de/profile/dr-dr-magnus-buhlert";
+    /**
+     * The username schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("username")
-    public String getUsername() {
-        return username;
-    }
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String username = "dr-dr-magnus-buhlert";
+    /**
+     * The uuid schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("uuid")
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String uuid = "624a1c1a-283c-4b0b-880f-76318f5134bb";
 
-    @JsonProperty("username")
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    @JsonProperty("questions")
-    public Integer getQuestions() {
-        return questions;
-    }
-
-    @JsonProperty("questions")
-    public void setQuestions(Integer questions) {
-        this.questions = questions;
-    }
-
+    /**
+     * The answers schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("answers")
     public Integer getAnswers() {
         return answers;
     }
 
+    /**
+     * The answers schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("answers")
     public void setAnswers(Integer answers) {
         this.answers = answers;
     }
 
+    /**
+     * The edited schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("edited")
+    public String getEdited() {
+        return edited;
+    }
+
+    /**
+     * The edited schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("edited")
+    public void setEdited(String edited) {
+        this.edited = edited;
+    }
+
+    /**
+     * The questions schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("questions")
+    public Integer getQuestions() {
+        return questions;
+    }
+
+    /**
+     * The questions schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("questions")
+    public void setQuestions(Integer questions) {
+        this.questions = questions;
+    }
+
+    /**
+     * The status schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("status")
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * The status schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("status")
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * The url schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("url")
     public String getUrl() {
         return url;
     }
 
+    /**
+     * The url schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
     @JsonProperty("url")
     public void setUrl(String url) {
         this.url = url;
     }
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+    /**
+     * The username schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("username")
+    public String getUsername() {
+        return username;
     }
 
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
+    /**
+     * The username schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("username")
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * The uuid schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("uuid")
+    public String getUuid() {
+        return uuid;
+    }
+
+    /**
+     * The uuid schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("uuid")
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
 }

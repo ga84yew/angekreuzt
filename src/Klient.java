@@ -17,11 +17,19 @@ import singleprofile.*;
 
 public class Klient {
 	
+	//attribs
 	String category, firstname, lastname;
 	SingleProfile sp;
-	Question q;
+	Question question;
 	String outputstring;
 	
+	
+	/**
+	 * check if it is possible to get an answer from the person, defined in the SingleProfile sp, to a question from the category
+	 * using attributes sp and category
+	 * sets attribute question if there is an answer to the Question
+	 * @ return boolean
+	 */
 	public boolean questionAnswered(){
 		// get correct Question q
 		ListIterator<Question> it = sp.getProfile().getQuestions().listIterator();
@@ -31,9 +39,9 @@ public class Klient {
 			localQ =it.next();
 			
 			// question found:
-			if (localQ.getCategory().contains(category)){ //category ist contained
+			if (localQ.getCategory().contains(category)){ //category is contained
 				if (!localQ.getAnswers().isEmpty()){ //Answer not empty
-					this.q=localQ;
+					this.question=localQ;
 					return true;
 				}
 				else{
@@ -45,7 +53,18 @@ public class Klient {
 		return false;
 	}
 	
-	public String getData(String category, String getDataUrl, ThreeQMSpeechlet t) throws JsonParseException, JsonMappingException, MalformedURLException, IOException {	
+	/**
+	 * Klient.getData() is called to return an answer from a profile, which is available via the String getDataUrl, to the category
+	 * attributes sp and category  and firstname and lastname are set
+	 * creates a client asking to receive a SingleProfile from getDataUrl
+	 * if no answer is availabe, it asks the Caller , a Erststimme erst, via erst.noAnswer() erst.alternativeAnswerfromSpeechelper() to return an alternative answer
+	 * if erst has no alternative answer, a simple dummy answer is returned
+	 * @ param String category
+	 * @ param String getDataUrl
+	 * @ param Erststimme erst
+	 * @ return String representing the answer
+	 */
+	public String getData(String category, String getDataUrl, Erststimme erst) throws JsonParseException, JsonMappingException, MalformedURLException, IOException {	
 		
 		this.category=category;
 
@@ -64,8 +83,8 @@ public class Klient {
 			 
 		 } else { //no
 			 
-			 if (t.noAnswer()){  // Speechhelper wants to do a new answer
-				 return t.alternativeAnswerfromSpeechelper();}
+			 if (erst.noAnswer()){  // Speechhelper wants to do a new answer
+				 return erst.alternativeAnswerfromSpeechelper();}
 			 
 			 else{  // no available answer from Klient
 				 return noAnswerfromKlient();} 
@@ -73,25 +92,33 @@ public class Klient {
 	 }
 
 	
+	/**
+	 * Klient.getAnswer() called to concatenate the answer
+	 * uses attribute question 
+	 * @ return String representing the answer
+	 */
 	
-	//called to get answer
 	public String getAnswer(){
-		String s=this.q.getAnswers().get(0).getSummary();
+		String s=this.question.getAnswers().get(0).getSummary();
 		
 		return
-		(SpeechHelper.wrapInSpeak("Hello,"+ SpeechHelper.createBreak(1) 
+		(SpeechHelper.wrapInSpeak("Hallo "+ SpeechHelper.createBreak(1) 
 		+firstname +" "+lastname
-		+" has an opinion concerning " +category 
+		+" hat eine Meinung zum Thema " +category 
 		+ SpeechHelper.createBreak(1) 
 		+s
 		));
 
 	}
 	
-    //called if no answer is available
+	/**
+	 * Klient.noAnswer() called to a Dummy answer if there is no answer from the profile sp
+	 * uses attribute firstname, lastname, category
+	 * @ return String representing the Dummy a answer
+	 */
 	public String noAnswerfromKlient(){
 		return (SpeechHelper.wrapInSpeak("Hello,"+ SpeechHelper.createBreak(1) 
 		+firstname +" "+lastname
-		+" has not answered to " +this.category));
+		+" hat das Thema " +this.category+" nicht beantwortet."));
 	}
 }
