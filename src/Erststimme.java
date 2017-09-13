@@ -77,7 +77,7 @@ public class Erststimme {
 	 * calls setText with the same params
 	 * @return SpeechletResponse for audio output to Alexa
 	 */
-	public SpeechletResponse call(String contentOfCategory, String contentOfFirstname, String contentOfLastname) {
+	public SpeechletResponse call(String contentOfCategory, String contentOfLastname) {
 		/* testing purpose
 		String contentOfCategory = "Familie";
 		String contentOfFirstname = paulskircheProfile.getProfiles().get(0).getPersonal().getFirstName();
