@@ -62,7 +62,6 @@ public class ThreeQMSpeechlet implements Speechlet {
 
 	public void setChosenCategory(String cat) {
 		chosenCategory = cat;
-		String candidates;
 	}
 
 	private String chosenCategory, getDataUrl1, getDataUrl2;
