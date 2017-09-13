@@ -20,9 +20,11 @@ import com.amazon.speech.ui.PlainTextOutputSpeech;
 public class AngekreuztSpeechlet implements Speechlet {
 	public SpeechletResponse onIntent(IntentRequest arg0, Session arg1) throws SpeechletException {
 		Intent zweitstimme = arg0.getIntent();
+		
+		
 		String input = zweitstimme.getName();
 		Erststimme erstestimme = new Erststimme();
-		erstestimme.
+		
 		Intent wahlsystem = arg0.getIntent();
 		String input = wahlsystem.getname();
 		Intent erststimme = arg0.getIntent();
@@ -32,7 +34,9 @@ public class AngekreuztSpeechlet implements Speechlet {
 		String result = "";
 		Document doc = null; 
 		System.out.println(input);
-		
+		/**
+		 * 
+		 */
 		if {
 			String wahlsystem = wahlsystem.getSlot("wahlsystem").getValue();
 			result = Wahlthema.auswaehlen(wahlsystem);
