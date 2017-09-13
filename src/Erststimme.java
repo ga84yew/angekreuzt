@@ -26,10 +26,8 @@ public class Erststimme {
 	// Attribs
 	private String chosenCategory, getDataUrl1, getDataUrl2;
 	List<String> categoriesList;
-	Parliament2Profile bundestagsProfile;
+	Parliament2Profile paulskircheProfile;
 	Parliament paulskirche;
-	private static final Logger log = LoggerFactory.getLogger(ThreeQMSpeechlet.class);
-
 
 	/**
 	 * chosenCategory can be set to enable flexible answer
@@ -41,11 +39,11 @@ public class Erststimme {
 
 	//
 	/**
-	 * Creates a Erststimme by setting Attribs: List<String> categoriesList, String getDataUrl1, String getDataUrl2 , Parliament paulskirche, bundestagsProfile
+	 * Creates a Erststimme by setting Attribs: List<String> categoriesList, String getDataUrl1, String getDataUrl2 , Parliament paulskirche, paulskircheProfile
 	 * and stores the profiles of the Parliament in profiles.json locally
 	 * @param String parliamentName: Name of parliament as used in abgeordnetenwatch.de
 	 * @param String[] categories as used in abgeordnetenwatch.de
-	 * 
+	 * URLs are hardcoded here
 	 */
 	public Erststimme(String parliamentName, String[] categories) throws MalformedURLException, IOException {
 		// define Parliament
@@ -67,7 +65,7 @@ public class Erststimme {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.enable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
 		mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
-		this.bundestagsProfile = mapper.readValue(f, Parliament2Profile.class);
+		this.paulskircheProfile = mapper.readValue(f, Parliament2Profile.class);
 
 	}
 	
@@ -80,10 +78,11 @@ public class Erststimme {
 	 * @return SpeechletResponse for audio output to Alexa
 	 */
 	public SpeechletResponse call(String contentOfCategory, String contentOfFirstname, String contentOfLastname) {
+		/* testing purpose
 		String contentOfCategory = "Familie";
-		String contentOfFirstname = bundestagsProfile.getProfiles().get(0).getPersonal().getFirstName();
-		String contentOfLastname = bundestagsProfile.getProfiles().get(0).getPersonal().getLastName();
-		/*
+		String contentOfFirstname = paulskircheProfile.getProfiles().get(0).getPersonal().getFirstName();
+		String contentOfLastname = paulskircheProfile.getProfiles().get(0).getPersonal().getLastName();
+		
 		 * String contentOfCategory = getData.getSlot("category").getValue();
 		 * String contentOfFirstname = getData.getSlot("vorname").getValue();
 		 * String contentOfLastname = getData.getSlot("nachname").getValue();
@@ -126,10 +125,10 @@ public class Erststimme {
 		if (categoriesList.contains(contentOfCategory)) {
 
 			// get correct Profile p
-			ListIterator<Profile> it = bundestagsProfile.getProfiles().listIterator();
+			ListIterator<Profile> it = paulskircheProfile.getProfiles().listIterator();
 			Profile p;
 
-			while (it.hasNext()) {
+			while (it.hasNext()) {//iterate over over profiles contained in 
 				p = it.next();
 
 				if (p.getPersonal().getFirstName().equals(contentOfFirstname)
