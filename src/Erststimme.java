@@ -74,8 +74,9 @@ public class Erststimme {
 		*/
 
 		// JSON from file to Object: local
-		String file=new Scanner(new File("/resources/parliament2profile.json")).useDelimiter("\\Z").next();
-				//readLineByLineJava("/resources/parliament2profile.json");
+		String file=new Scanner(new File("src/resources/parliament2profile.json")).useDelimiter("\\Z").next();
+		//URL url	= this.getClass().getClassLoader().getResource(language.getString());
+		//readLineByLineJava("/resources/parliament2profile.json");
   		this.paulskircheProfile = mapper.readValue(file, Parliament2Profile.class);
 
 	}
@@ -132,7 +133,7 @@ public class Erststimme {
 		String set;
 
 		// correct category?
-		if (categoriesList.contains(contentOfCategory)) {
+		if (categorieInTopThemeList(categoriesList,contentOfCategory) ){
 
 			// get correct Profile p
 			ListIterator<Profile> it = paulskircheProfile.getProfiles().listIterator();
@@ -176,24 +177,29 @@ public class Erststimme {
 	 * called by Klient to get the alternative Answer from Erststimme
 	 * @return String , which represents the alternative Answer
 	 */
-	public String alternativeAnswerfromSpeechelper() {// called by client to get
-														// an alternative Answer
-		return "alternative Answer Dummy";
-	}
+	public String alternativeAnswerfromSpeechelper() {	return "alternative Answer Dummy";}
 	
 	/**
 	 * called to get a response, when Erststimme is asked for a name not included in database of profiles
 	 * @return String , which represents the explanation
 	 */
-	public String wrongname(String fullname) {
-		return fullname + " wurde leider in der Datebank des Parlaments" + paulskirche.getName() + " nicht gefunden.";
-	}
+	public String wrongname(String fullname) {return fullname + " wurde leider in der Datebank des Parlaments" + paulskirche.getName() + " nicht gefunden.";}
 	
 	/**
 	 * called to get a response, when Erststimme is askeded for a category not included in database of categories
 	 * @return String , which represents the explanation
 	 */
-	public String wrongcategory(String category) {
-		return category + " wurde leider in der Themen-Datebank nicht gefunden.";
+	public String wrongcategory(String category) {return category + " wurde leider in der Themen-Datebank nicht gefunden.";	}
+	
+	private boolean categorieInTopThemeList( List<ArrayList<String>> categoriesList, String category){
+		ListIterator<ArrayList<String>>  itTopthemen = categoriesList.listIterator();
+		ArrayList<String>TThemes = new ArrayList<String>();
+		while (itTopthemen.hasNext()){ //iterate over all Topthemes
+			TThemes=itTopthemen.next();
+			if (TThemes.contains(category)){ //if category is part of Topthemes
+						return true;
+				}
+		}	
+		return false;
 	}
 }
