@@ -58,7 +58,7 @@ public class AngekreuztSpeechlet implements Speechlet {
 		} else if (input.equals("erststimme")) {
 	  		
 			String themen = intent.getSlot("themen").getValue();
-			String fullname = intent.getSlot("vorname").getValue()+intent.getSlot("nachname").getValue();
+			String fullname = intent.getSlot("kandidat").getValue();
 			Themen themes = new Themen();
 			//categoriesList.addAll(Arrays.asList("Integration und Asyl","finanzen","sicherheit","bildung","Arbeit und Soziales","Eu und aussenpolitik"));
 			try {
