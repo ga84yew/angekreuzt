@@ -144,7 +144,7 @@ public class Klient {
 		+firstname +" "+lastname
 		+" hat eine Meinung zum Thema " +category 
 		+ SpeechHelper.createBreak(1) 
-		+s
+		+Delegate.html2text(s)
 		));
 
 	}

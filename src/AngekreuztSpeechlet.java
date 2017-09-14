@@ -80,6 +80,23 @@ public class AngekreuztSpeechlet implements Speechlet {
 	public void onSessionStarted(SessionStartedRequest arg0, Session arg1) throws SpeechletException {
 		// TODO Auto-generated method stub
 	}
+	
+	/* Testing purpose for Erststimme
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String themen = "Integration";
+		String fullname = "Florian Post";
+		Themen themes = new Themen();
+		SpeechletResponse r = new SpeechletResponse();
+		//categoriesList.addAll(Arrays.asList("Integration und Asyl","finanzen","sicherheit","bildung","Arbeit und Soziales","Eu und aussenpolitik"));
+		try {
+			Erststimme erstestimme = new Erststimme("Bundestag",themes.getListofTopthemes());
+			r= erstestimme.call(themen, fullname);
+		} catch (IOException e) {e.printStackTrace();}
+
+	}
+	*/
+	
 }
 
 
