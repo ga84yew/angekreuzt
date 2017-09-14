@@ -15,23 +15,23 @@ public class SteuernundFinanzen {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		if (partei.equals("CDU")) {
+		if (partei.toLowerCase().equals("cdu"))  {
 			if (doc != null) {
 				result = extractInformation(result, doc, 10, 12);
 			}
-		} else if (partei.equals("SPD")) {
+		} else if (partei.toLowerCase().equals("spd")) {
 			if (doc != null) {
 				result = extractInformation(result, doc, 14, 16);
 			} 
-		} else if (partei.equals("Linke")) {
+		} else if (partei.toLowerCase().equals("linke")) {
 			if (doc != null) {
 				result = extractInformation(result, doc, 18, 21);
 			}
-		} else if (partei.equals("Grüne")) {
+		} else if (partei.toLowerCase().equals("gruene"))  {
 			if (doc != null) {
 				result = extractInformation(result, doc, 23, 25);
 			}
-		} else if (partei.equals("FDP")) {
+		} else if (partei.toLowerCase().equals("fdp"))  {
 			if (doc != null) {
 				result = extractInformation(result, doc, 27, 28);
 			}

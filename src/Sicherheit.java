@@ -16,23 +16,23 @@ public class Sicherheit  {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (partei.equals("CDU")) {
+		if (partei.toLowerCase().equals("cdu"))   {
 			if (doc != null) {
 				result = extractInformation(result, doc, 18, 19);
 			}
-		} else if (partei.equals("SPD")) {
+		} else if (partei.toLowerCase().equals("spd"))   {
 			if (doc != null) {
 				result = extractInformation(result, doc, 22, 24);
 			} 
-		} else if (partei.equals("Linke")) {
+		} else if (partei.toLowerCase().equals("linke"))  {
 			if (doc != null) {
 				result = extractInformation(result, doc, 27, 28);
 			}
-		} else if (partei.equals("Grüne")) {
+		} else if (partei.toLowerCase().equals("gruene")) {
 			if (doc != null) {
 				result = extractInformation(result, doc, 30, 33);
 			}
-		} else if (partei.equals("FDP")) {
+		} else if (partei.toLowerCase().equals("fdp"))  {
 			if (doc != null) {
 				result = extractInformation(result, doc, 35, 37);
 			}

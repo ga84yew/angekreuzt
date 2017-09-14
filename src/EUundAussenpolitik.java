@@ -18,23 +18,23 @@ public class EUundAussenpolitik {
 			e.printStackTrace();
 		}
 
-		if (partei.equals("CDU")) {
+		if (partei.toLowerCase().equals("cdu"))  {
 			if (doc != null) {
 				result = extractInformation(result, doc, 3, 4);
 			}
-		} else if (partei.equals("SPD")) {
+		} else if (partei.toLowerCase().equals("spd")) {
 			if (doc != null) {
 				result = extractInformation(result, doc, 6, 8);
 			} 
-		} else if (partei.equals("Linke")) {
+		} else if (partei.toLowerCase().equals("linke"))  {
 			if (doc != null) {
 				result = extractInformation(result, doc, 10, 13);
 			}
-		} else if (partei.equals("Grüne")) {
+		} else if (partei.toLowerCase().equals("gruene"))  {
 			if (doc != null) {
 				result = extractInformation(result, doc, 16, 17);
 			}
-		} else if (partei.equals("FDP")) {
+		} else if (partei.toLowerCase().equals("fdp"))  {
 			if (doc != null) {
 				result = extractInformation(result, doc, 19, 21);
 			}

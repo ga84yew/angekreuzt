@@ -17,23 +17,23 @@ public class ArbeitundSoziales {
 			e.printStackTrace();
 		}
 
-		if (partei.equals("CDU")) {
+		if (partei.toLowerCase().equals("cdu"))  {
 			if (doc != null) {
 				result = extractInformation(result, doc, 2, 13);
 			}
-		} else if (partei.equals("SPD")) {
+		} else if (partei.toLowerCase().equals("spd")) {
 			if (doc != null) {
 				result = extractInformation(result, doc, 16, 26);
 			} 
-		} else if (partei.equals("Linke")) {
+		} else if (partei.toLowerCase().equals("linke")) {
 			if (doc != null) {
 				result = extractInformation(result, doc, 28, 37);
 			}
-		} else if (partei.equals("Grüne")) {
+		} else if (partei.toLowerCase().equals("gruene"))  {
 			if (doc != null) {
 				result = extractInformation(result, doc, 38, 47);
 			}
-		} else if (partei.equals("FDP")) {
+		} else if (partei.toLowerCase().equals("fdp"))  {
 			if (doc != null) {
 				result = extractInformation(result, doc, 49, 58);
 			}

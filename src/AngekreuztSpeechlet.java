@@ -25,12 +25,11 @@ import parliament2profile.Parliament2Profile;
 
 public class AngekreuztSpeechlet implements Speechlet {
 	public SpeechletResponse onIntent(IntentRequest arg0, Session arg1) throws SpeechletException {
-		
+
 		Intent intent = arg0.getIntent();
-		
+
 		ArrayList<String> categoriesList;
 		String input = intent.getName();
-		
 		SpeechletResponse r = new SpeechletResponse();
 		PlainTextOutputSpeech text = new PlainTextOutputSpeech();
 		String result = "";
@@ -54,9 +53,9 @@ public class AngekreuztSpeechlet implements Speechlet {
 			result = ZweitStimme.auswahl(themen, partei);
 			text.setText(result);
 			r.setOutputSpeech(text);
-			
+
 		} else if (input.equals("erststimme")) {
-	  		
+
 			String themen = intent.getSlot("themen").getValue();
 			String fullname = intent.getSlot("kandidat").getValue();
 			Themen themes = new Themen();
