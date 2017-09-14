@@ -9,10 +9,12 @@ public class Wahlsystem {
 		String result = "";
 		Document doc = null; 
 		try {
-			doc = Jsoup.connect("http://www.bundestagswahl-bw.de/wahlsystem_btw.html").post();
+			System.out.println("in getText");
+			doc = Jsoup.connect("http://www.bundestagswahl-bw.de/wahlsystem_btw.html").get();
+			result = extractInformation(result, doc, 0, 11);
 		} catch (Exception e) {
 			e.printStackTrace();
-			result = extractInformation(result, doc, 0, 11);
+			
 		}	
 		return result;
 	}
@@ -25,5 +27,8 @@ public class Wahlsystem {
 		return result;
 	}
 
+public static void main(String[] args) {
+	System.out.println(getText());
+}
 
 }

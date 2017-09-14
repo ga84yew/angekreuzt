@@ -39,9 +39,12 @@ public class AngekreuztSpeechlet implements Speechlet {
 		/**
 		 * 
 		 */
+		System.out.println("Intent: "+ input);
 		if(input.equals("wahlsys")){
 			String wahlsystemString = intent.getSlot("wahlsystem").getValue();
+			System.out.println("Input slot value: "+wahlsystemString );
 			result = Wahlthema.auswaehlen(wahlsystemString );
+			System.out.println("Result: "+result);
 			text.setText(result);
 			r.setOutputSpeech(text);
 

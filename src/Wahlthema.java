@@ -9,10 +9,11 @@ String result = "";
 
 ArrayList<String> wahlen = new ArrayList<String>();
 
-wahlen.addAll(Arrays.asList("Waehlen", "Wahlprozess", "Wahlablauf"));
+wahlen.addAll(Arrays.asList("waehlen", "wahlprozess", "wahlablauf"));
 
-if (wahlen.contains(wahlsystem)) {
+if (wahlen.contains(wahlsystem.toLowerCase())) {
 	result = Wahlsystem.getText();
+
 }
 
 return result;
