@@ -11,6 +11,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.glassfish.jersey.client.ClientConfig;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -38,6 +39,7 @@ public class Klient {
 	 * @ return boolean
 	 */
 	public boolean questionAnswered(){
+		
 		// get correct Question q
 		ListIterator<Question> itQ  = sp.getProfile().getQuestions().listIterator();
 		Question localQ=new Question();
@@ -50,7 +52,7 @@ public class Klient {
 			localQ =itQ.next();
 			
 			// question found:
-			if (localQ.getCategory().contains(category)){ //category is contained
+			if (localQ.getCategory().toLowerCase().contains(category.toLowerCase())){ //category is contained
 				
 				if (!localQ.getAnswers().isEmpty()){ //Answer not empty
 					this.question=localQ;
@@ -60,33 +62,33 @@ public class Klient {
 			//save all categories answered, step2
 			if ( !localQ.getAnswers().isEmpty()	){
 				allAnsweredQuestions.add(localQ);
-				allAnsweredQuestionCategories.add(localQ.getCategory());
+				allAnsweredQuestionCategories.add(localQ.getCategory().toLowerCase());
 			}
 		}
 		
 		//looking for alternative themes from combination of all Themes and  allAnsweredQuestioncategories
-		Themen Topthemes = new Themen(); ListIterator<ArrayList<String>>  itTopthemen = Topthemes.getListofTopthemes().listIterator();
-		ArrayList<String>TThemes = new ArrayList<String>();
-		
+		Themen Topthemes = new Themen(); 
 		Iterator<String> itThemen; String cat = "";
 		
-		while (itTopthemen.hasNext()){ //iterate over all Topthemes
-			TThemes=itTopthemen.next();
-			if (TThemes.contains(category)){ //if category is part of Topthemes
-			itThemen=TThemes.iterator();
-				while (itThemen.hasNext()){ //iterate over all themes in here
-					cat=itThemen.next();
-					if (allAnsweredQuestionCategories.contains(cat)){ // theme here is the same as in 
-						int i =allAnsweredQuestionCategories.indexOf(cat); //get index
-						this.question=allAnsweredQuestions.get(i); // set question
-						return true;
-					}
+		GroupMapping map = Topthemes.mapping;
+		if (map.mapSubGroupsToGroup.containsKey(category)){
+			String group = map.mapSubGroupsToGroup.get(category);
+			
+			ArrayList<String> subGroups =map.mapGroupToSubGroups.get(group);
+			
+			int i=0; int index=0;
+			for (String item:subGroups){
+				for (String category:allAnsweredQuestionCategories){
+						if(category.toLowerCase().equals(item.toLowerCase())){
+							index=i;
+							this.question=allAnsweredQuestions.get(index); // set question
+							return true;
+						}
+					i++;
 				}
+				i=0;
 			}
-				
 		}
-		
-		
 		// question not found
 		return false;
 	}

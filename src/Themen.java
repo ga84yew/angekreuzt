@@ -1,37 +1,54 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import org.apache.commons.collections4.*;
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
 public class Themen {
 	
-	ArrayList<String> finanzen= new ArrayList<String>();
-	ArrayList<String> sicherheit= new ArrayList<String>();
-	ArrayList<String> bildung= new ArrayList<String>();
-	ArrayList<String> arbeitundsoziales= new ArrayList<String>();
-	ArrayList<String> euundaussenpolitik= new ArrayList<String>();
-	ArrayList<String> integrationundasyl= new ArrayList<String>();
+public GroupMapping mapping = new GroupMapping();
+	
+	ArrayList<String> finanzenL= new ArrayList<String>();
+	ArrayList<String> sicherheitL= new ArrayList<String>();
+	ArrayList<String> bildungL= new ArrayList<String>();
+	ArrayList<String> arbeitundsozialesL= new ArrayList<String>();
+	ArrayList<String> euundaussenpolitikL= new ArrayList<String>();
+	ArrayList<String> integrationundasylL= new ArrayList<String>();
+	
+	
 	public Themen() {
-	finanzen.addAll(Arrays.asList("Finanzen", "Steuern", "Finanzpolitik", "Steuerpolitik", "Steuer", "Wirtschaft", "Verbraucherschutz", 
+		
+	//value									//keys	
+	finanzenL.addAll(Arrays.asList("Finanzen", "Steuern", "Finanzpolitik", "Steuerpolitik", "Steuer", "Wirtschaft", "Verbraucherschutz", 
 			"Verkehr und Infrastruktur", "Städtebau"));
 
-	sicherheit.addAll(Arrays.asList("innere-Sicherheit", "Militär", "Demokratie", "Terror", "Bundeswehr", "Verteidigung", "Schutz der Bevölkerung"));
+	sicherheitL.addAll(Arrays.asList("innere-Sicherheit", "Militär", "Demokratie", "Terror", "Bundeswehr", "Verteidigung", "Schutz der Bevölkerung"));
 
-	bildung.addAll(Arrays.asList("Bildung", "Digitalisierung", "Kita", "Kindergarten", "Schulbildung", 
+	bildungL.addAll(Arrays.asList("Bildung", "Digitalisierung", "Kita", "Kindergarten", "Schulbildung", 
 			"Schule", "Ausbildung", "Universität", "Forschung", "Schulsystem", "Hochschule", "Studium", "Kultur", "Kinder", "Jugend"));
 
-	arbeitundsoziales.addAll(Arrays.asList("Arbeit", "Arbeitslosigkeit", "Familenpolitik", "Familie", "Kinder", "Kindergeld", 
+	arbeitundsozialesL.addAll(Arrays.asList("Arbeit", "Arbeitslosigkeit", "Familenpolitik", "Familie", "Kinder", "Kindergeld", 
 			"Arbeitslosengeld", "Eltern","Frauen", "Rente", "Krankenversicherung", "Gesundheit", "Rentenversicherung", "Ehe"));
-	euundaussenpolitik.addAll(Arrays.asList("Europa", "euroäische Union", "Ausland", "Auslandspolitik","EU", "Russland", "USA", 
+	euundaussenpolitikL.addAll(Arrays.asList("Europa", "euroäische Union", "Ausland", "Auslandspolitik","EU", "Russland", "USA", 
 			"Amerika", "Aussenpolitik", "Türkei", "Internationales"));
 
-	integrationundasyl.addAll(Arrays.asList("Integration", "Asyl", "Flüchtlinge", "Immigration", "Einwanderung", 
+	integrationundasylL.addAll(Arrays.asList("Integration", "Asyl", "Flüchtlinge", "Immigration", "Einwanderung", 
 			"Asylbewerber", "Einwanderungspolitik"));
+	
+	forArraytoMap( finanzenL, "finanzen");
+		forArraytoMap( sicherheitL, "sicherheit");
+		forArraytoMap( bildungL, "bildung");
+		forArraytoMap( arbeitundsozialesL, "arbeitundsoziales");
+		forArraytoMap( euundaussenpolitikL, "euundaussenpolitik");
+		forArraytoMap( integrationundasylL, "integrationundasyl");	
 	}
-	public List<ArrayList<String>> getListofTopthemes(){
-
-	List<ArrayList<String>> out= new ArrayList<ArrayList<String>>();
-	out.add(finanzen);out.add(bildung);out.add(arbeitundsoziales);out.add(euundaussenpolitik);out.add(integrationundasyl);
-	return out;	
+	
+	
+	public void forArraytoMap(ArrayList<String> l, String listname){
+		for (int i=0; i<l.size(); i++){
+			mapping.mapSubGroupsToGroup.put(l.get(i),listname );
+		}
+		mapping.mapGroupToSubGroups.put(listname ,l);
 	}
+	
 	
 }

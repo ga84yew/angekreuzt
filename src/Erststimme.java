@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Scanner;
 
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class Erststimme {
 
 	// Attribs
 	private String chosenCategory, getDataUrl1, getDataUrl2;
-	List<ArrayList<String>> categoriesList;
+	 CaseInsensitiveMap<String, String> mapSubGroupsToGroup;
 	Parliament2Profile paulskircheProfile;
 	Parliament paulskirche;
 
@@ -47,13 +48,13 @@ public class Erststimme {
 	 * @param String[] categories as used in abgeordnetenwatch.de
 	 * URLs are hardcoded here
 	 */
-	public Erststimme(String parliamentName, List<ArrayList<String>> list) throws MalformedURLException, IOException {
+	public Erststimme(String parliamentName, GroupMapping mapping) throws MalformedURLException, IOException {
 		// define Parliament
 		Parliament paulskirche = new Parliament();
 		paulskirche.setName("parliamentName)");
 
 		// set categoriesList from list and jsonString from remote URL
-		this.categoriesList =list;
+		this.mapSubGroupsToGroup =mapping.mapSubGroupsToGroup;
 
 		// set format for URL String
 		this.getDataUrl1 = "https://www.abgeordnetenwatch.de/api/profile/";
@@ -89,7 +90,7 @@ public class Erststimme {
 	 * calls setText with the same params
 	 * @return SpeechletResponse for audio output to Alexa
 	 */
-	public SpeechletResponse call(String contentOfCategory, String fullname) {
+	public SpeechletResponse call(String subgroup, String fullname) {
 		/* testing purpose
 		String contentOfCategory = "Familie";
 		String contentOfFirstname = paulskircheProfile.getProfiles().get(0).getPersonal().getFirstName();
@@ -108,7 +109,7 @@ public class Erststimme {
 													// setSsml()
 
 		// call to define text
-		try {	set = setText(contentOfCategory, fullname);
+		try {	set = setText(subgroup, fullname);
 		} catch (IOException e) {		e.printStackTrace();	}
 		System.out.println(set);
 
@@ -128,14 +129,15 @@ public class Erststimme {
 	 * @param String contentOfLastnam: Lastname of person in profile
 	 * @return String set
 	 */
-	private String setText(String contentOfCategory, String fullname)
+	private String setText(String subGroup, String fullname)
 			throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
 		String set;
 
 		// correct category?
-		if (categorieInTopThemeList(categoriesList,contentOfCategory) ){
+		if (mapSubGroupsToGroup.containsKey(subGroup)){
 
 			// get correct Profile p
+			
 			ListIterator<Profile> it = paulskircheProfile.getProfiles().listIterator();
 			Profile p=new Profile();
 
@@ -156,11 +158,11 @@ public class Erststimme {
 			String getDataUrl = getDataUrl1 + p.getMeta().getUsername()+ getDataUrl2;
 			System.out.println(getDataUrl);
 			Klient k = new Klient();
-			set = k.getData(contentOfCategory, getDataUrl, this);
+			set = k.getData(subGroup, getDataUrl, this);
 
 			// category not possible
 		} else {
-			set = SpeechHelper.wrapInSpeak(wrongcategory(contentOfCategory));
+			set = SpeechHelper.wrapInSpeak(wrongcategory(subGroup));
 		}
 		return set;
 	}
@@ -191,15 +193,5 @@ public class Erststimme {
 	 */
 	public String wrongcategory(String category) {return category + " wurde leider in der Themen-Datebank nicht gefunden.";	}
 	
-	private boolean categorieInTopThemeList( List<ArrayList<String>> categoriesList, String category){
-		ListIterator<ArrayList<String>>  itTopthemen = categoriesList.listIterator();
-		ArrayList<String>TThemes = new ArrayList<String>();
-		while (itTopthemen.hasNext()){ //iterate over all Topthemes
-			TThemes=itTopthemen.next();
-			if (TThemes.contains(category)){ //if category is part of Topthemes
-						return true;
-				}
-		}	
-		return false;
-	}
+	
 }

@@ -27,17 +27,13 @@ public class AngekreuztSpeechlet implements Speechlet {
 	public SpeechletResponse onIntent(IntentRequest arg0, Session arg1) throws SpeechletException {
 
 		Intent intent = arg0.getIntent();
-
-		ArrayList<String> categoriesList;
 		String input = intent.getName();
 		SpeechletResponse r = new SpeechletResponse();
 		PlainTextOutputSpeech text = new PlainTextOutputSpeech();
 		String result = "";
 		Document doc = null;
 		//System.out.println(input);
-		/**
-		 * 
-		 */
+	
 		System.out.println("Intent: "+ input);
 		if(input.equals("wahlsys")){
 			String wahlsystemString = intent.getSlot("wahlsystem").getValue();
@@ -63,10 +59,9 @@ public class AngekreuztSpeechlet implements Speechlet {
 			String themen = intent.getSlot("themen").getValue();
 			String fullname = intent.getSlot("kandidat").getValue();
 			Themen themes = new Themen();
-			//categoriesList.addAll(Arrays.asList("Integration und Asyl","finanzen","sicherheit","bildung","Arbeit und Soziales","Eu und aussenpolitik"));
 			try {
-				Erststimme erstestimme = new Erststimme("Bundestag",themes.getListofTopthemes());
-				r= erstestimme.call(themen, fullname);
+				Erststimme erstestimme = new Erststimme("Bundestag",themes.mapping);
+			r= erstestimme.call(themen, fullname);
 			} catch (IOException e) {e.printStackTrace();}
 		}
 
@@ -84,21 +79,21 @@ public class AngekreuztSpeechlet implements Speechlet {
 		// TODO Auto-generated method stub
 	}
 	
-	/* Testing purpose for Erststimme
+	/* Testing purpose for Erststimme*/
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		String themen = "Integration";
-		String fullname = "Florian Post";
+		String fullname = "Jens-Eberhard Jahn";
 		Themen themes = new Themen();
 		SpeechletResponse r = new SpeechletResponse();
 		//categoriesList.addAll(Arrays.asList("Integration und Asyl","finanzen","sicherheit","bildung","Arbeit und Soziales","Eu und aussenpolitik"));
 		try {
-			Erststimme erstestimme = new Erststimme("Bundestag",themes.getListofTopthemes());
+			Erststimme erstestimme = new Erststimme("Bundestag",themes.mapping);
 			r= erstestimme.call(themen, fullname);
 		} catch (IOException e) {e.printStackTrace();}
 
 	}
-	*/
+	
 	
 }
 
