@@ -1,4 +1,6 @@
 
+import java.io.IOException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -7,11 +9,15 @@ public class Bildung {
 	public static String getText(String partei)  {
 		String result = "";
 		Document doc = null; 
-		try {
-			doc = Jsoup.connect("http://www.bundestagswahl-bw.de/bildung_btwahl2017.html").post();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} if (partei.equals("CDU")) {
+		
+			try {
+				doc = Jsoup.connect("http://www.bundestagswahl-bw.de/bildung_btwahl2017.html").get();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		 if (partei.equals("CDU")) {
 			if (doc != null) {
 				result = extractInformation(result, doc, 18, 19);
 			}

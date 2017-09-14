@@ -1,4 +1,6 @@
 
+import java.io.IOException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -7,11 +9,14 @@ public class IntegrationundAsyl {
 	public static String getText(String partei)  {
 		String result = "";
 		Document doc = null; 
+
 		try {
-			doc = Jsoup.connect("http://www.bundestagswahl-bw.de/integration_asyl_btwahl2017.html").post();
-		} catch (Exception e) {
+			doc = Jsoup.connect("http://www.bundestagswahl-bw.de/integration_asyl_btwahl2017.html").get();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} if (partei.equals("CDU")) {
+		}
+		if (partei.equals("CDU")) {
 			if (doc != null) {
 				result = extractInformation(result, doc, 2, 3);
 			}
@@ -46,8 +51,8 @@ public class IntegrationundAsyl {
 		}
 		return result;
 	}
-	
+
 }
-	
+
 
 
