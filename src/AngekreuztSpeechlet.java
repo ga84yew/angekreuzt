@@ -33,7 +33,7 @@ public class AngekreuztSpeechlet implements Speechlet {
 		SpeechletResponse r = new SpeechletResponse();
 		PlainTextOutputSpeech text = new PlainTextOutputSpeech();
 		String result = "";
-		Document doc = null; 
+		Document doc = null;
 		//System.out.println(input);
 		/**
 		 * 
@@ -50,8 +50,10 @@ public class AngekreuztSpeechlet implements Speechlet {
 		} else if (input.equals("zweitstimme")) {
 			String themen = intent.getSlot("themen").getValue();
 			String partei = intent.getSlot("partei").getValue();
-			System.out.println(themen);
-			System.out.println(partei);
+			String parteien = intent.getSlot("Parteien").getValue();
+			System.out.println("Themen: " + themen);
+			System.out.println("Partei: " + partei);
+			System.out.println("Parteien: " + parteien);
 			result = ZweitStimme.auswahl(themen, partei);
 			text.setText(result);
 			r.setOutputSpeech(text);
