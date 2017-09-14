@@ -1,24 +1,25 @@
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ZweitStimme {
 	public static String auswahl(String themen, String partei) {
 		String result = "";	
 	ArrayList<String> finanzen = new ArrayList<String>();
 	finanzen.addAll(Arrays.asList("Finanzen", "Steuern", "Finanzpolitik", "Steuerpolitik", "Steuer", "Wirtschaft", "Verbraucherschutz", 
-			"Verkehr und Infrastruktur", "StÃ¤dtebau"));
+			"Verkehr und Infrastruktur", "Städtebau"));
 	if (finanzen.contains(themen)) {
 		result = SteuernundFinanzen.getText(partei);
 	}	
 	ArrayList<String> sicherheit = new ArrayList<String>();
-	sicherheit.addAll(Arrays.asList("innere Sicherheit", "MilitÃ¤r", "Demokratie", "Terror", "Bundeswehr", "Verteidigung", "Schutz der BevÃ¶lkerung"));
+	sicherheit.addAll(Arrays.asList("innere Sicherheit", "Militär", "Demokratie", "Terror", "Bundeswehr", "Verteidigung", "Schutz der Bevölkerung"));
 	if (sicherheit.contains(themen)) {
 		result = Sicherheit.getText(partei);
 	}
 	ArrayList<String> bildung = new ArrayList<String>();
 	bildung.addAll(Arrays.asList("Bildung", "Digitalisierung", "Kita", "Kindergarten", "Schulbildung", 
-			"Schule", "Ausbildung", "UniversitÃ¤t", "Forschung", "Schulsystem", "Hochschule", "Studium", "Kultur", "Kinder", "Jugend"));
+			"Schule", "Ausbildung", "Universität", "Forschung", "Schulsystem", "Hochschule", "Studium", "Kultur", "Kinder", "Jugend"));
 	if (bildung.contains(themen)) {
 		result = Bildung.getText(partei);	
 	}
@@ -28,14 +29,14 @@ public class ZweitStimme {
 	if (arbeitundsoziales.contains(themen)) {
 		result = ArbeitundSoziales.getText(partei);
 	}
-	ArrayList<String> euundaussenpolitik = new ArrayList<String>();
-	euundaussenpolitik.addAll(Arrays.asList("Europa", "europÃ¤isches Union", "Ausland", "Auslandspolitik","EU", "Russland", "USA", 
-			"Amerika", "Aussenpolitik", "TÃ¼rkei", "Internationales"));
+	List<String> euundaussenpolitik = new ArrayList<String>();
+	euundaussenpolitik.addAll(Arrays.asList("Europa", "euroäische Union", "Ausland", "Auslandspolitik","EU", "Russland", "USA", 
+			"Amerika", "Aussenpolitik", "Türkei", "Internationales"));
 	if (euundaussenpolitik.contains(themen)) {
 		result = EUundAussenpolitik.getText(partei);
 	}
 	ArrayList<String> integrationundasyl = new ArrayList<String>();
-	integrationundasyl.addAll(Arrays.asList("Integration", "Asyl", "FlÃ¼chtlinge", "Immigration", "Einwanderung", 
+	integrationundasyl.addAll(Arrays.asList("Integration", "Asyl", "Flüchtlinge", "Immigration", "Einwanderung", 
 			"Asylbewerber", "Einwanderungspolitik"));
 	if (integrationundasyl.contains(themen)) {
 		result = IntegrationundAsyl.getText(partei);

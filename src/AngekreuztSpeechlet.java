@@ -1,7 +1,9 @@
 
 import java.awt.List;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.nio.file.Paths;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,38 +18,52 @@ import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import parliament2profile.Parliament2Profile;
 
 public class AngekreuztSpeechlet implements Speechlet {
 	public SpeechletResponse onIntent(IntentRequest arg0, Session arg1) throws SpeechletException {
-		Intent zweitstimme = arg0.getIntent();
 		
+		Intent intent = arg0.getIntent();
 		
-		String input = zweitstimme.getName();
-		Erststimme erstestimme = new Erststimme();
+		ArrayList<String> categoriesList;
+		String input = intent.getName();
 		
-		Intent wahlsystem = arg0.getIntent();
-		String input = wahlsystem.getname();
-		Intent erststimme = arg0.getIntent();
-		String input = arg0.getIntent();
 		SpeechletResponse r = new SpeechletResponse();
 		PlainTextOutputSpeech text = new PlainTextOutputSpeech();
 		String result = "";
 		Document doc = null; 
-		System.out.println(input);
+		//System.out.println(input);
 		/**
 		 * 
 		 */
-		if {
-			String wahlsystem = wahlsystem.getSlot("wahlsystem").getValue();
-			result = Wahlthema.auswaehlen(wahlsystem);
+		if(input.equals("wahlsys")){
+			String wahlsystemString = intent.getSlot("wahlsystem").getValue();
+			result = Wahlthema.auswaehlen(wahlsystemString );
+			text.setText(result);
+			r.setOutputSpeech(text);
 
-		} else {
-			String themen = zweitstimme.getSlot("themen").getValue();
-			String partei = zweitstimme.getSlot("partei").getValue();
+		} else if (input.equals("zweitstimme")) {
+			String themen = intent.getSlot("themen").getValue();
+			String partei = intent.getSlot("partei").getValue();
 			result = ZweitStimme.auswahl(themen, partei);
-		} 
-		text.setText(result);
-		r.setOutputSpeech(text);
+			text.setText(result);
+			r.setOutputSpeech(text);
+			
+		} else if (input.equals("erststimme")) {
+	  		
+			String themen = intent.getSlot("themen").getValue();
+			String fullname = intent.getSlot("vorname").getValue()+intent.getSlot("nachname").getValue();
+			Themen themes = new Themen();
+			//categoriesList.addAll(Arrays.asList("Integration und Asyl","finanzen","sicherheit","bildung","Arbeit und Soziales","Eu und aussenpolitik"));
+			try {
+				Erststimme erstestimme = new Erststimme("Bundestag",themes.getListofTopthemes());
+				r= erstestimme.call(themen, fullname);
+			} catch (IOException e) {e.printStackTrace();}
+		}
+
 		return r;
 	}
 

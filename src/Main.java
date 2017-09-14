@@ -33,10 +33,10 @@ public final class Main extends SpeechletRequestStreamHandler {
          * This Id can be found on https://developer.amazon.com/edw/home.html#/ "Edit" the relevant
          * Alexa Skill and put the relevant Application Ids in this Set.
          */
-        supportedApplicationIds.add("amzn1.ask.skill.2efc8595-2cb4-488f-b942-971902efcd4f");
+        supportedApplicationIds.add("amzn1.ask.skill.fee99074-c788-424e-ae7e-307aa9bfdd41");
     }
 
     public Main() throws JsonParseException, JsonMappingException, URISyntaxException, IOException {
-        super(new ThreeQMSpeechlet(), supportedApplicationIds);
+        super(new AngekreuztSpeechlet(), supportedApplicationIds);
     }
 }

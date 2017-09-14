@@ -12,7 +12,11 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import parliament2profile.Parliament2Profile;
 import singleprofile.*;
 
 public class Klient {
@@ -72,8 +76,8 @@ public class Klient {
 		 WebTarget webTarget = client.target(getDataUrl);
 		 Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
 		 Response response = invocationBuilder.get();
-
-		 this.sp=response.readEntity(SingleProfile.class); 
+	        
+	     this.sp=response.readEntity(SingleProfile.class); 
 		 this.firstname=this.sp.getProfile().getPersonal().getFirstName();
 		 this.lastname=this.sp.getProfile().getPersonal().getLastName();
 		 

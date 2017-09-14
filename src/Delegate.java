@@ -20,4 +20,31 @@ public class Delegate {
 	            reader.close();
 	    }
 	}
+	public static String lowercase(String text){
+		char[] chars = text.toCharArray();
+		char[] out = new char[chars.length]; 
+		int o=0;
+	    for (int i = 0; i < chars.length; i++)
+	    {
+	        char c = chars[i];
+	        
+	        if (Character.isUpperCase(c))
+	        {
+	        	c= Character.toLowerCase(c);
+	        }
+	        /*
+	        else if (Character.isLowerCase(c))
+	        {
+	            chars[i] = Character.toUpperCase(c);
+	        }
+	        */
+	        if (Character.isAlphabetic(c)){
+	        	 out[o]=c;
+	        	 o++;		 
+	        }
+	        
+	    }
+	    String s =new String(out);
+	    return s.trim();
+	}
 }

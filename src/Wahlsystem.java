@@ -4,7 +4,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 public class Wahlsystem {
-	public static String getText()  {
+	
+	public static String getText() {
 		String result = "";
 		Document doc = null; 
 		try {
@@ -23,4 +24,6 @@ public class Wahlsystem {
 		}
 		return result;
 	}
+
+
 }

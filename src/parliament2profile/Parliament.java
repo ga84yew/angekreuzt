@@ -9,7 +9,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "name",
-    "uuid"
+    "uuid",
+    "joined"
 })
 public class Parliament {
 
@@ -19,9 +20,19 @@ public class Parliament {
      * An explanation about the purpose of this instance.
      * 
      */
+	 @JsonProperty("joined")
+	    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+	    private String joined = "";
+	    /**
+	     * The uuid schema
+	     * <p>
+	     * An explanation about the purpose of this instance.
+	     * 
+	     */
+	   
     @JsonProperty("name")
     @JsonPropertyDescription("An explanation about the purpose of this instance.")
-    private String name = "Bremen";
+    private String name = "";
     /**
      * The uuid schema
      * <p>
@@ -30,7 +41,7 @@ public class Parliament {
      */
     @JsonProperty("uuid")
     @JsonPropertyDescription("An explanation about the purpose of this instance.")
-    private String uuid = "1764827c-4a36-40f5-a6f0-5c368a40f217";
+    private String uuid = "";
 
     /**
      * The name schema

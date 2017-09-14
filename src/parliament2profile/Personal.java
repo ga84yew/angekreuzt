@@ -13,8 +13,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "education",
     "email",
     "first_name",
+    "simplefirst_name",
     "gender",
     "last_name",
+    "simplelast_name",
+    "simplefull_name",
     "location",
     "picture",
     "profession",
@@ -30,7 +33,7 @@ public class Personal {
      */
     @JsonProperty("birthyear")
     @JsonPropertyDescription("An explanation about the purpose of this instance.")
-    private String birthyear = "1967";
+    private String birthyear = "";
     /**
      * The degree schema
      * <p>
@@ -66,7 +69,38 @@ public class Personal {
      */
     @JsonProperty("first_name")
     @JsonPropertyDescription("An explanation about the purpose of this instance.")
-    private String firstName = "Magnus";
+    private String firstName = "";
+    
+    /**
+     * The simplefirst_name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("simplefirst_name")
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String simpleFirstName = "";    
+    
+    /**
+     * The simplelast_name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("simplelast_name")
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String simpleLastName = "";    
+       
+    /**
+     * The simplefull_name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("simplefull_name")
+    @JsonPropertyDescription("An explanation about the purpose of this instance.")
+    private String simpleFullName = "";   
+    
     /**
      * The gender schema
      * <p>
@@ -84,7 +118,7 @@ public class Personal {
      */
     @JsonProperty("last_name")
     @JsonPropertyDescription("An explanation about the purpose of this instance.")
-    private String lastName = "Buhlert";
+    private String lastName = "";
     @JsonProperty("location")
     private Location location;
     @JsonProperty("picture")
@@ -217,6 +251,69 @@ public class Personal {
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
+    
+    /**
+     * The simplefirst_name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("simpleFirst_name")
+    public String getSimpleFirstName() {
+        return this.simpleFirstName;
+    }
+    
+    /**
+     * The simplefirst_name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("simpleFirst_name")
+    public void setSimpleFirstName(String firstName) {
+        this.simpleFirstName = firstName;
+    }
+    /**
+     * The simplelast_name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("simpleLast_name")
+    public void setSimpleLastName(String Name) {
+        this.simpleLastName = Name;
+    }
+    /**
+     * The simplelast_name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("simpleLast_name")
+    public String getSimpleLastName() {
+        return simpleLastName;
+    }
+    /**
+     * The simplefull_name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("simplefull_name")
+    public String getSimpleFullName() {
+        return simpleFullName;
+    }
+    /**
+     * The simplefull_name schema
+     * <p>
+     * An explanation about the purpose of this instance.
+     * 
+     */
+    @JsonProperty("simplefull_name")
+    public void setSimpleFullName(String Name) {
+        this.simpleFullName = Name;
+    }
+
 
     /**
      * The gender schema
