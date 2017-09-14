@@ -50,6 +50,8 @@ public class AngekreuztSpeechlet implements Speechlet {
 		} else if (input.equals("zweitstimme")) {
 			String themen = intent.getSlot("themen").getValue();
 			String partei = intent.getSlot("partei").getValue();
+			System.out.println(themen);
+			System.out.println(partei);
 			result = ZweitStimme.auswahl(themen, partei);
 			text.setText(result);
 			r.setOutputSpeech(text);
