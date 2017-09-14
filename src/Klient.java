@@ -1,5 +1,7 @@
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.ListIterator;
 
 import javax.ws.rs.client.Client;
@@ -16,6 +18,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import javafx.util.Pair;
 import parliament2profile.Parliament2Profile;
 import singleprofile.*;
 
@@ -36,23 +39,54 @@ public class Klient {
 	 */
 	public boolean questionAnswered(){
 		// get correct Question q
-		ListIterator<Question> it = sp.getProfile().getQuestions().listIterator();
+		ListIterator<Question> itQ  = sp.getProfile().getQuestions().listIterator();
 		Question localQ=new Question();
 		
-		while (it.hasNext()){
-			localQ =it.next();
+		//save all categories answered, step1
+		ArrayList<Question> allAnsweredQuestions=new ArrayList<Question> (); 
+		ArrayList<String> allAnsweredQuestionCategories=new ArrayList<String>();	
+		
+		while (itQ.hasNext()){//iterate over all Questions in profile
+			localQ =itQ.next();
 			
 			// question found:
 			if (localQ.getCategory().contains(category)){ //category is contained
+				
 				if (!localQ.getAnswers().isEmpty()){ //Answer not empty
 					this.question=localQ;
-					return true;
-				}
-				else{
-					return false;
-				}
+					return true;  //no action more necessary!
+				}			
+			}
+			//save all categories answered, step2
+			if ( !localQ.getAnswers().isEmpty()	){
+				allAnsweredQuestions.add(localQ);
+				allAnsweredQuestionCategories.add(localQ.getCategory());
 			}
 		}
+		
+		//looking for alternative themes from combination of all Themes and  allAnsweredQuestioncategories
+		Themen Topthemes = new Themen(); ListIterator<ArrayList<String>>  itTopthemen = Topthemes.getListofTopthemes().listIterator();
+		ArrayList<String>TThemes = new ArrayList<String>();
+		
+		Iterator<String> itThemen; String cat = "";
+		
+		while (itTopthemen.hasNext()){ //iterate over all Topthemes
+			TThemes=itTopthemen.next();
+			if (TThemes.contains(category)){ //if category is part of Topthemes
+			itThemen=TThemes.iterator();
+				while (itThemen.hasNext()){ //iterate over all themes in here
+					cat=itThemen.next();
+					if (allAnsweredQuestionCategories.contains(cat)){ // theme here is the same as in 
+						int i =allAnsweredQuestionCategories.indexOf(cat); //get index
+						this.question=allAnsweredQuestions.get(i); // set question
+						return true;
+					}
+				}
+			}
+				
+		}
+		
+		
 		// question not found
 		return false;
 	}
