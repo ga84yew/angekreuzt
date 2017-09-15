@@ -101,7 +101,7 @@ public class Erststimme {
 	 * calls setText with the same params
 	 * @return SpeechletResponse for audio output to Alexa
 	 */
-	public SpeechletResponse call(String subGroup, String candidateFullname) {
+	public SsmlOutputSpeech call(String subGroup, String candidateFullname) {
 		/* testing purpose
 		String contentOfCategory = "Familie";
 		String contentOfFirstname = parliamentProfile.getProfiles().get(0).getPersonal().getFirstName();
@@ -125,11 +125,7 @@ public class Erststimme {
 
 		// set text
 		text.setSsml(set);
-
-		// output to alexa
-		SpeechletResponse r = new SpeechletResponse();
-		r.setOutputSpeech(text);
-		return r;
+		return text;
 	}
 
 	/**
