@@ -34,8 +34,6 @@ public class AngekreuztSpeechlet implements Speechlet {
 	 * @return SpeechletResponse for out to Alexa
 	 */
 	public SpeechletResponse onIntent(IntentRequest arg0, Session arg1) throws SpeechletException {
-
-		
 		
 		// Create reprompt
         String  firstRe= "Schön, dass du dich über die Wahl am 24.September informieren willst. Das ist Super. Wähle ja keinen Schmarrn.";
@@ -93,9 +91,15 @@ public class AngekreuztSpeechlet implements Speechlet {
 			
 			text.setText("Bitte wiederhole deine Anfrage und nuschel nicht so.");
 			return SpeechletResponse.newAskResponse(text, reprompt);     
+			
+		} else if( input.equals("AMAZON.StopIntent") || input.equals("AMAZON.CancelIntent") ) {
+			
+			text.setText("Servus");
+			return SpeechletResponse.newTellResponse(text);
+			
 		}
 		
-		text.setText("Bitte wiederhole deine Anfrage.");
+		text.setText(result);
 		return SpeechletResponse.newAskResponse(text, reprompt);
 	}
 	/**

@@ -13,13 +13,13 @@ public class ZweitStimme {
 		result = SteuernundFinanzen.getText(partei);
 	}	
 	ArrayList<String> sicherheit = new ArrayList<String>();
-	sicherheit.addAll(Arrays.asList("innere sicherheit", "militär", "demokratie", "terror", "bundeswehr", "verteidigung", "schutz der bevölkerung"));
+	sicherheit.addAll(Arrays.asList("innere sicherheit", "militaer", "demokratie", "terror", "bundeswehr", "verteidigung", "schutz der bevoelkerung"));
 	if (sicherheit.contains(themen.toLowerCase())) {
 		result = Sicherheit.getText(partei);
 	}
 	ArrayList<String> bildung = new ArrayList<String>();
 	bildung.addAll(Arrays.asList("bildung", "digitalisierung", "kita", "kindergarten", "schulbildung", 
-			"schule", "ausbildung", "universität", "forschung", "schulsystem", "hochschule", "studium", "kultur", "kinder", "jugend"));
+			"schule", "ausbildung", "universit�t", "forschung", "schulsystem", "hochschule", "studium", "kultur", "kinder", "jugend"));
 	if (bildung.contains(themen.toLowerCase())) {
 		result = Bildung.getText(partei);	
 	}
