@@ -2,6 +2,9 @@ import java.io.IOException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.LaunchRequest;
@@ -12,9 +15,12 @@ import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
+import com.amazon.speech.ui.Reprompt;
+import com.amazon.speech.ui.SimpleCard;
 
 
 public class AngekreuztSpeechlet implements Speechlet {
+    private static final Logger log = LoggerFactory.getLogger(AngekreuztSpeechlet.class);
 	public SpeechletResponse onIntent(IntentRequest arg0, Session arg1) throws SpeechletException {
 
 		Intent intent = arg0.getIntent();
@@ -22,7 +28,7 @@ public class AngekreuztSpeechlet implements Speechlet {
 		SpeechletResponse r = new SpeechletResponse();
 		PlainTextOutputSpeech text = new PlainTextOutputSpeech();
 		String result = "";
-		Document doc = null;
+		//Document doc = null;
 		//System.out.println(input);
 	
 		System.out.println("Intent: "+ input);
@@ -59,9 +65,36 @@ public class AngekreuztSpeechlet implements Speechlet {
 		return r;
 	}
 
-	public SpeechletResponse onLaunch(LaunchRequest arg0, Session arg1) throws SpeechletException {return null;}
-	public void onSessionEnded(SessionEndedRequest arg0, Session arg1) throws SpeechletException {}
-	public void onSessionStarted(SessionStartedRequest arg0, Session arg1) throws SpeechletException {}
+	   public SpeechletResponse onLaunch(final LaunchRequest request, final Session session)
+		         throws SpeechletException {
+		    	log.info("onLaunch requestId={}, sessionId={}", request.getRequestId(),session.getSessionId());
+		        return getWelcomeResponse();
+		    }
+
+	   public void onSessionEnded(SessionEndedRequest arg0, Session arg1) throws SpeechletException {}
+	   public void onSessionStarted(SessionStartedRequest arg0, Session arg1) throws SpeechletException {}
+	
+	private SpeechletResponse getWelcomeResponse() {
+		String first="Willkommen, du kannst nach Parteien, Themen und Kandidaten fragen.";
+		String second="zum Beispiel";
+		String third="was denkt die AÖP zum Thema Wandfarbe?";
+	        String speechText = first+second+third;
+
+	        // Create the Simple card content.
+	        SimpleCard card = new SimpleCard();
+	        card.setTitle("Angekreuzt");
+	        card.setContent(speechText);
+
+	        // Create the plain text output.
+	        PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
+	        speech.setText(speechText);
+
+	        // Create reprompt
+	        Reprompt reprompt = new Reprompt();
+	        reprompt.setOutputSpeech(speech);
+
+	        return SpeechletResponse.newAskResponse(speech, reprompt, card);
+	}
 	
 	/* Testing purpose for Erststimme*/
 	public static void main(String[] args) {
