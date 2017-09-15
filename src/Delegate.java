@@ -1,11 +1,23 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-
 import org.jsoup.Jsoup;
-public class Delegate {
+/**
+ * Delegate is used for String retrieving and manipulation
+ * @author Rainer Wichmann
+ * @version 1.0, 15.9.2017
+ */
 
-	public static String readUrl(String urlString) throws Exception {
+
+public final class Delegate {
+
+	/**
+	 * @param urlString String, where the file is located
+	 * @return String from the file at the url "urlString"
+	 * @throws IOException while reading with InputStream
+	 */
+	public static String readUrl(String urlString) throws IOException {
 	    BufferedReader reader = null;
 	    try {
 	        URL url = new URL(urlString);
@@ -22,6 +34,15 @@ public class Delegate {
 	            reader.close();
 	    }
 	}
+	
+	/**
+	 * converts complex Strings to simple Strings by 
+	 * -lowercase each character
+	 * -eliminating all non alphabetic characters
+	 * -trimming the output string to the smaller size
+	 * @param text input String
+	 * @return simple String
+	 */
 	public static String lowercase(String text){
 		char[] chars = text.toCharArray();
 		char[] out = new char[chars.length]; 
@@ -50,9 +71,15 @@ public class Delegate {
 	    return s.trim();
 	}
 
-
-	public static String html2text(String s) {
-		String result= Jsoup.parse(s).text();
+	/**
+	 * converts complex Strings copied from html pages 
+	 * -using Jsoup parser
+	 * -deleting all enties in brackets
+	 * @param text input String
+	 * @return simple String
+	 */
+	public static String html2text(String text) {
+		String result= Jsoup.parse(text).text();
 		return result.replaceAll("\\((.+?)\\)", "");
 	}
 }

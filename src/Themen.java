@@ -1,8 +1,15 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import org.apache.commons.collections4.*;
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
+/**
+	 * Themen creas Array list of political contexts=subgroups and maps them to top level contexts=groups
+	 * public attribute mapping is a public GroupMapping
+	 * it uses GroupMapping for Mapping of String subgroup to String group and from  String groups to ArrayList of Strings of subgroups
+	 * Each map is a CaseInsensitiveMap since alexa does not care about cases.
+	 * @author Rainer Wichmann
+	 * @version 1.0, 15.9.2017
+	 */	
 public class Themen {
 	
 public GroupMapping mapping = new GroupMapping();

@@ -1,10 +1,14 @@
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ListIterator;
-
-/* imports only necessary when access url with client
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import singleprofile.*;
+/* imports only necessary when access url with jersey client 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
@@ -12,40 +16,49 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
- */
-import org.apache.commons.collections4.map.CaseInsensitiveMap;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+*/
 
-import singleprofile.*;
+/**
+ * accesses remote json data at abgeordnetenwatch.de for retrieving answer to a political context. 
+ * A context is called subGroup and they have common top level Groups
+ * A question includes answer and subGruop, which is called category according to json profile of abgeordnetenwatch.de
+ * @author Rainer Wichmann
+ * @version 1.0, 15.9.2017
+ */
 
 public class Klient {
 	
 	//attribs
-	private String subGroup, firstname, lastname;
-	private SingleProfile candidateProfile;
-	private Question question; //answer, subGruop are contained here
-	private String outputstring;
-	private boolean subGroupReplaced=false;
+	private String subGroup;
+	private String firstname, lastname; 
+	private SingleProfile candidateProfile; // candidate Profile containing all questions from the candidate 
+	private Question question; //answer and subGruop are contained here, getAnswer() uses this attribute to concatenate answer String
+	private boolean subGroupReplaced=false; // true if subGroup was replaced by similar subGroup
 	
 	/**
-	 * Klient.getData() is called to return a question to the category from a profile, which is available via the String questionUrl
-	 * attributes candidateProfile, subGroup, firstname and lastname are set
-	 * creates a client asking to receive a SingleProfile from getDataUrl
+	 * constructor Klient(subGroup)  sets attributes subGroup,
+	 * @param subGroup String representing the political context
+	 */
+	public Klient(String subGroup){
+		this.subGroup=subGroup;
+	}
+	
+	/**
+	 * Klient.getText() is called to return a question to the category from a profile, which is available via the String questionUrl
+	 * attributes candidateProfile, firstname and lastname are set
+	 * is asking to receive a SingleProfile from getDataUrl, uses a mapper or a client+webtarget+invocationbuilder+response 
 	 * if no answer is availabe, it asks the Caller , a Erststimme erst, via erst.noAnswer() erst.alternativeAnswerfromSpeechelper() to return an alternative answer
 	 * if erst has no alternative answer, a simple dummy answer is returned
-	 * @ param String category
-	 * @ param String getDataUrl
-	 * @ param Erststimme erst, will be used for asking for the Erststimme, if no answer at all is available
-	 * @ return String representing the answer
+	 * @param questionUrl String of the url where the questions of the candidate can be found
+	 * @param erst may be used for asking for the Erststimme erst, if no answer at all is available. Not implemented yet
+	 * @return String representing the answer
+	 * @throws IOException during json mapping in mapper.readValue
+	 * @throws JsonParseException during json mapping in mapper.readValue
+	 * @throws JsonMappingException during json mapping in mapper.readValue
 	 */
-	public String getData(String subGroup, String questionUrl, Erststimme erst) throws JsonParseException, JsonMappingException, MalformedURLException, IOException {	
-		
-		this.subGroup=subGroup;
+	public String getText(String questionUrl, Erststimme erst) throws IOException,   JsonParseException,   JsonMappingException {	
 			
-		/* version with access url with client
+		/* version  for accessing questionUrl with client
 		 Client client = ClientBuilder.newClient( new ClientConfig() );
 		 WebTarget webTarget = client.target(questionUrl);
 		 Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
@@ -81,9 +94,8 @@ public class Klient {
 	 * check if it is possible to get an answer from the person, defined in the SingleProfile sp, to a question from the subGroup
 	 * using attributes candidateProfile and subGroup
 	 * sets attribute question if there is an answer to the Question
-	 * @ return boolean
+	 * @return boolean
 	 */
-	
 	private boolean questionAnswered(){
 		
 		// get correct Question q
@@ -116,10 +128,10 @@ public class Klient {
 	}
 
 
-	/**looking for alternative questions relating to subGroups from combination of all groups from Themen and allAnsweredQuestionGroups
-	 * 
-	 * @param allAnsweredQuestions
-	 * @param allAnsweredQuestionGroups
+	/**
+	 * looking for alternative questions relating to subGroups from combination of all groups from Themen and allAnsweredQuestionGroups
+	 * @param ArrayList<Question> allAnsweredQuestions
+	 * @param ArrayList<Question> allAnsweredQuestionGroups
 	 * @return boolean, true if Question and subGroup found and locally set
 	 */
 	private boolean alternativeQuestion(ArrayList<Question> allAnsweredQuestions,
@@ -156,10 +168,10 @@ public class Klient {
 	/**
 	 * Klient.getAnswer() called to concatenate the answer String
 	 * uses attribute question 
-	 * @ return String representing the answer
+	 * @return String representing the answer
 	 */
-	
 	private String getAnswer(){
+		
 		String s=this.question.getAnswers().get(0).getSummary();
 		
 		//include if subGroup was replaced with similar subgroup during Search
@@ -172,14 +184,13 @@ public class Klient {
 		+ SpeechHelper.createBreak(1) 
 		+Delegate.html2text(s)
 		));
-
 	}
 	
 	/**
 	 * Klient.noAnswer() called if there is no answer from the profile candidateProfile, no other answer possible, 
 	 * therefore return dummy answer
 	 * uses attribute firstname, lastname, subGroup
-	 * @ return String representing the Dummy a answer
+	 * @return String representing the Dummy a answer
 	 */
 	private String noAnswerfromKlient(){
 		return (SpeechHelper.wrapInSpeak("Hello,"+ SpeechHelper.createBreak(1) 

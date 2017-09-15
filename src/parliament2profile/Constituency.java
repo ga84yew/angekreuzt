@@ -66,7 +66,7 @@ public class Constituency {
      * The name schema
      * <p>
      * An explanation about the purpose of this instance.
-     * 
+     *@return name 
      */
     @JsonProperty("name")
     public String getName() {
@@ -77,7 +77,7 @@ public class Constituency {
      * The name schema
      * <p>
      * An explanation about the purpose of this instance.
-     * 
+     * @param  name input name
      */
     @JsonProperty("name")
     public void setName(String name) {
@@ -88,7 +88,7 @@ public class Constituency {
      * The number schema
      * <p>
      * An explanation about the purpose of this instance.
-     * 
+     * @return number
      */
     @JsonProperty("number")
     public String getNumber() {
@@ -99,7 +99,7 @@ public class Constituency {
      * The number schema
      * <p>
      * An explanation about the purpose of this instance.
-     * 
+     * @param  number input number
      */
     @JsonProperty("number")
     public void setNumber(String number) {
@@ -121,7 +121,7 @@ public class Constituency {
      * The result schema
      * <p>
      * An explanation about the purpose of this instance.
-     * 
+     * no @param result input result
      */
     @JsonProperty("result")
     public void setResult(Object result) {
@@ -132,7 +132,7 @@ public class Constituency {
      * The uuid schema
      * <p>
      * An explanation about the purpose of this instance.
-     * 
+     * return uuid
      */
     @JsonProperty("uuid")
     public String getUuid() {
@@ -154,7 +154,7 @@ public class Constituency {
      * The won schema
      * <p>
      * An explanation about the purpose of this instance.
-     * 
+     * @return won
      */
     @JsonProperty("won")
     public Boolean getWon() {
