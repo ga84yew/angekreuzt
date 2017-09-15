@@ -1,150 +1,174 @@
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.ListIterator;
 
+/* imports only necessary when access url with client
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.glassfish.jersey.client.ClientConfig;
-
+ */
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import javafx.util.Pair;
-import parliament2profile.Parliament2Profile;
 import singleprofile.*;
 
 public class Klient {
 	
 	//attribs
-	String category, firstname, lastname;
-	SingleProfile sp;
-	Question question;
-	String outputstring;
+	private String subGroup, firstname, lastname;
+	private SingleProfile candidateProfile;
+	private Question question; //answer, subGruop are contained here
+	private String outputstring;
+	private boolean subGroupReplaced=false;
+	
+	/**
+	 * Klient.getData() is called to return a question to the category from a profile, which is available via the String questionUrl
+	 * attributes candidateProfile, subGroup, firstname and lastname are set
+	 * creates a client asking to receive a SingleProfile from getDataUrl
+	 * if no answer is availabe, it asks the Caller , a Erststimme erst, via erst.noAnswer() erst.alternativeAnswerfromSpeechelper() to return an alternative answer
+	 * if erst has no alternative answer, a simple dummy answer is returned
+	 * @ param String category
+	 * @ param String getDataUrl
+	 * @ param Erststimme erst, will be used for asking for the Erststimme, if no answer at all is available
+	 * @ return String representing the answer
+	 */
+	public String getData(String subGroup, String questionUrl, Erststimme erst) throws JsonParseException, JsonMappingException, MalformedURLException, IOException {	
+		
+		this.subGroup=subGroup;
+			
+		/* version with access url with client
+		 Client client = ClientBuilder.newClient( new ClientConfig() );
+		 WebTarget webTarget = client.target(questionUrl);
+		 Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
+		 Response response = invocationBuilder.get();
+		 this.candidateProfile=response.readEntity(SingleProfile.class); 
+	      */
+		
+		//version with mapper
+		URL jsonUrl = new URL(questionUrl);
+        ObjectMapper mapper = new ObjectMapper();
+		mapper.enable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
+  		mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+  		this.candidateProfile = mapper.readValue(jsonUrl, SingleProfile.class);
+  		
+  		//set firstname, lastname
+        this.firstname=this.candidateProfile.getProfile().getPersonal().getFirstName();
+		this.lastname=this.candidateProfile.getProfile().getPersonal().getLastName();
+		 
+		 // question answered?
+		 if (questionAnswered()){  return getAnswer();    //yes
+			 		 
+		 } else { //no
+			 
+			 if (erst.noAnswer()){  // Speechlet Erststimme wants to do a new answer!
+				 return erst.alternativeAnswerfromSpeechlet();}
+			 else{  // no available answer from Klient
+				 return noAnswerfromKlient();} 
+		 }
+	 }
 	
 	
 	/**
-	 * check if it is possible to get an answer from the person, defined in the SingleProfile sp, to a question from the category
-	 * using attributes sp and category
+	 * check if it is possible to get an answer from the person, defined in the SingleProfile sp, to a question from the subGroup
+	 * using attributes candidateProfile and subGroup
 	 * sets attribute question if there is an answer to the Question
 	 * @ return boolean
 	 */
-	public boolean questionAnswered(){
+	
+	private boolean questionAnswered(){
 		
 		// get correct Question q
-		ListIterator<Question> itQ  = sp.getProfile().getQuestions().listIterator();
+		ListIterator<Question> itQ  = candidateProfile.getProfile().getQuestions().listIterator();
 		Question localQ=new Question();
 		
-		//save all categories answered, step1
+		//save all subGroups answered, step1
 		ArrayList<Question> allAnsweredQuestions=new ArrayList<Question> (); 
-		ArrayList<String> allAnsweredQuestionCategories=new ArrayList<String>();	
+		ArrayList<String> allAnsweredQuestionGroups=new ArrayList<String>();	
 		
 		while (itQ.hasNext()){//iterate over all Questions in profile
 			localQ =itQ.next();
 			
 			// question found:
-			if (localQ.getCategory().toLowerCase().contains(category.toLowerCase())){ //category is contained
+			if (localQ.getCategory().toLowerCase().contains(subGroup.toLowerCase())){ //subGroup is contained
 				
 				if (!localQ.getAnswers().isEmpty()){ //Answer not empty
-					this.question=localQ;
-					return true;  //no action more necessary!
+					this.question=localQ; // set question
+					return true;  //question found return true
 				}			
 			}
-			//save all categories answered, step2
+			//save all subGroups answered, step2
 			if ( !localQ.getAnswers().isEmpty()	){
 				allAnsweredQuestions.add(localQ);
-				allAnsweredQuestionCategories.add(localQ.getCategory().toLowerCase());
+				allAnsweredQuestionGroups.add(localQ.getCategory().toLowerCase());
 			}
 		}
+		//Question not yet found, look for alternative Questions, with a subGruop similar to the current subGroup
+		return alternativeQuestion(allAnsweredQuestions, allAnsweredQuestionGroups);
+	}
+
+
+	/**looking for alternative questions relating to subGroups from combination of all groups from Themen and allAnsweredQuestionGroups
+	 * 
+	 * @param allAnsweredQuestions
+	 * @param allAnsweredQuestionGroups
+	 * @return boolean, true if Question and subGroup found and locally set
+	 */
+	private boolean alternativeQuestion(ArrayList<Question> allAnsweredQuestions,
+			ArrayList<String> allAnsweredQuestionGroups) {
 		
-		//looking for alternative themes from combination of all Themes and  allAnsweredQuestioncategories
-		Themen Topthemes = new Themen(); 
-		Iterator<String> itThemen; String cat = "";
-		
-		GroupMapping map = Topthemes.mapping;
-		if (map.mapSubGroupsToGroup.containsKey(category)){
-			String group = map.mapSubGroupsToGroup.get(category);
+		//get mapping of groups and subgroups from class Themen
+		Themen Topthemes = new Themen(); GroupMapping map = Topthemes.mapping;
+	
+		if (map.mapSubGroupsToGroup.containsKey(subGroup)){ //subgroup contained in any of the Groups?
+			String group = map.mapSubGroupsToGroup.get(subGroup); //get corresponding group
 			
-			ArrayList<String> subGroups =map.mapGroupToSubGroups.get(group);
+			ArrayList<String> similarSubGroups =map.mapGroupToSubGroups.get(group); //get all similar subgroups from the selected group
 			
 			int i=0; int index=0;
-			for (String item:subGroups){
-				for (String category:allAnsweredQuestionCategories){
-						if(category.toLowerCase().equals(item.toLowerCase())){
+			for (String similarSubGroup:similarSubGroups){ //iterate over similar subgroups
+				for (String subGroupInQuestion:allAnsweredQuestionGroups){ //iterate over answered subGroups
+						if(subGroupInQuestion.toLowerCase().equals(similarSubGroup.toLowerCase())){ //if any answered subGruoup Question equals any of the similar subgroups
 							index=i;
-							this.question=allAnsweredQuestions.get(index); // set question
-							return true;
+							this.question=allAnsweredQuestions.get(index); // set question to the new question, which answers to new SubGroup
+							this.subGroup=this.question.getCategory().toLowerCase(); //set SubGroup to Category contained in selected question
+							subGroupReplaced=true; //indicate that subGroup has been replaced
+							return true; //question found return true
 						}
 					i++;
 				}
 				i=0;
 			}
 		}
-		// question not found
+			// question not found
 		return false;
 	}
 	
-	/**
-	 * Klient.getData() is called to return an answer from a profile, which is available via the String getDataUrl, to the category
-	 * attributes sp and category  and firstname and lastname are set
-	 * creates a client asking to receive a SingleProfile from getDataUrl
-	 * if no answer is availabe, it asks the Caller , a Erststimme erst, via erst.noAnswer() erst.alternativeAnswerfromSpeechelper() to return an alternative answer
-	 * if erst has no alternative answer, a simple dummy answer is returned
-	 * @ param String category
-	 * @ param String getDataUrl
-	 * @ param Erststimme erst
-	 * @ return String representing the answer
-	 */
-	public String getData(String category, String getDataUrl, Erststimme erst) throws JsonParseException, JsonMappingException, MalformedURLException, IOException {	
 		
-		this.category=category;
-
-		 Client client = ClientBuilder.newClient( new ClientConfig() );
-		 WebTarget webTarget = client.target(getDataUrl);
-		 Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
-		 Response response = invocationBuilder.get();
-	        
-	     this.sp=response.readEntity(SingleProfile.class); 
-		 this.firstname=this.sp.getProfile().getPersonal().getFirstName();
-		 this.lastname=this.sp.getProfile().getPersonal().getLastName();
-		 
-		 // question answered?
-		 if (questionAnswered()){ //yes
-			 return getAnswer(); 
-			 
-		 } else { //no
-			 
-			 if (erst.noAnswer()){  // Speechhelper wants to do a new answer
-				 return erst.alternativeAnswerfromSpeechelper();}
-			 
-			 else{  // no available answer from Klient
-				 return noAnswerfromKlient();} 
-		 }
-	 }
-
-	
 	/**
-	 * Klient.getAnswer() called to concatenate the answer
+	 * Klient.getAnswer() called to concatenate the answer String
 	 * uses attribute question 
 	 * @ return String representing the answer
 	 */
 	
-	public String getAnswer(){
+	private String getAnswer(){
 		String s=this.question.getAnswers().get(0).getSummary();
+		
+		//include if subGroup was replaced with similar subgroup during Search
+		if (this.subGroupReplaced) { s=s+ "Das ursprünglichl gewünschte Thema wurde leider nicht beantwortet."; } 
 		
 		return
 		(SpeechHelper.wrapInSpeak("Hallo "+ SpeechHelper.createBreak(1) 
 		+firstname +" "+lastname
-		+" hat eine Meinung zum Thema " +category 
+		+" hat eine Meinung zum Thema " +subGroup 
 		+ SpeechHelper.createBreak(1) 
 		+Delegate.html2text(s)
 		));
@@ -152,13 +176,14 @@ public class Klient {
 	}
 	
 	/**
-	 * Klient.noAnswer() called to a Dummy answer if there is no answer from the profile sp
-	 * uses attribute firstname, lastname, category
+	 * Klient.noAnswer() called if there is no answer from the profile candidateProfile, no other answer possible, 
+	 * therefore return dummy answer
+	 * uses attribute firstname, lastname, subGroup
 	 * @ return String representing the Dummy a answer
 	 */
-	public String noAnswerfromKlient(){
+	private String noAnswerfromKlient(){
 		return (SpeechHelper.wrapInSpeak("Hello,"+ SpeechHelper.createBreak(1) 
 		+firstname +" "+lastname
-		+" hat das Thema " +this.category+" nicht beantwortet."));
+		+" hat das Thema " +this.subGroup+" nicht beantwortet."));
 	}
 }

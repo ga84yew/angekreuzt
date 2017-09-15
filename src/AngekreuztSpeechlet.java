@@ -1,9 +1,5 @@
 
-import java.awt.List;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.nio.file.Paths;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,10 +14,7 @@ import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import parliament2profile.Parliament2Profile;
 
 public class AngekreuztSpeechlet implements Speechlet {
 	public SpeechletResponse onIntent(IntentRequest arg0, Session arg1) throws SpeechletException {
@@ -68,25 +61,17 @@ public class AngekreuztSpeechlet implements Speechlet {
 		return r;
 	}
 
-	public SpeechletResponse onLaunch(LaunchRequest arg0, Session arg1) throws SpeechletException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public void onSessionEnded(SessionEndedRequest arg0, Session arg1) throws SpeechletException {
-		// TODO Auto-generated method stub
-	}
-	public void onSessionStarted(SessionStartedRequest arg0, Session arg1) throws SpeechletException {
-		// TODO Auto-generated method stub
-	}
+	public SpeechletResponse onLaunch(LaunchRequest arg0, Session arg1) throws SpeechletException {return null;}
+	public void onSessionEnded(SessionEndedRequest arg0, Session arg1) throws SpeechletException {}
+	public void onSessionStarted(SessionStartedRequest arg0, Session arg1) throws SpeechletException {}
 	
 	/* Testing purpose for Erststimme*/
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String themen = "Integration";
+		String themen = "Familie";
 		String fullname = "Jens-Eberhard Jahn";
 		Themen themes = new Themen();
 		SpeechletResponse r = new SpeechletResponse();
-		//categoriesList.addAll(Arrays.asList("Integration und Asyl","finanzen","sicherheit","bildung","Arbeit und Soziales","Eu und aussenpolitik"));
 		try {
 			Erststimme erstestimme = new Erststimme("Bundestag",themes.mapping);
 			r= erstestimme.call(themen, fullname);
