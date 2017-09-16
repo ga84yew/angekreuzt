@@ -200,21 +200,21 @@ public class Erststimme {
 	 * called to get the alternative Answer from Erststimme
 	 * @return String , which represents the alternative Answer
 	 */
-	public String alternativeAnswerfromSpeechlet() {	return "alternative Answer Dummy";}
+	public String alternativeAnswerfromSpeechlet() {	return "alternativer Answer Dummy";}
 	
 	/**
 	 * called to get a response, when Erststimme is asked for a name not included in database of profiles
 	 * @param candidateFullname String of the Full name of the candidate
 	 * @return String , which represents the explanation
 	 */
-	public String wrongname(String candidateFullname) {return candidateFullname + " wurde leider in der Datebank des Parlaments" + parliament.getName() + " nicht gefunden.";}
+	public String wrongname(String candidateFullname) {return candidateFullname + " wurde leider in der Datenbank des Parlaments" + parliament.getName() + " nicht gefunden.";}
 	
 	/**
 	 * called to get a response, when Erststimme is askeded for a category not included in database of categories
 	 * @param subGroup representing context, which is not found
 	 * @return String , which represents the explanation
 	 */
-	public String wrongSubGroup(String subGroup) {return subGroup + " wurde leider in der Themen-Datebank nicht gefunden.";	}
+	public String wrongSubGroup(String subGroup) {return subGroup + " wurde leider in der Themen-Datenbank nicht gefunden.";	}
 	
 	
 }

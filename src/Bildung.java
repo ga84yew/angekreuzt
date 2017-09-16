@@ -29,7 +29,7 @@ public class Bildung {
 			if (doc != null) {
 				result = extractInformation(result, doc, 24, 26);
 			}
-		} else if (partei.toLowerCase().equals("gruene")) {
+		} else if (partei.toLowerCase().equals("grünen")) {
 			if (doc != null) {
 				result = extractInformation(result, doc, 28, 28);
 			}

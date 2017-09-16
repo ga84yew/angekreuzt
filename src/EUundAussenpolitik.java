@@ -30,7 +30,7 @@ public class EUundAussenpolitik {
 			if (doc != null) {
 				result = extractInformation(result, doc, 10, 13);
 			}
-		} else if (partei.toLowerCase().equals("gruene"))  {
+		} else if (partei.toLowerCase().equals("grünen"))  {
 			if (doc != null) {
 				result = extractInformation(result, doc, 16, 17);
 			}

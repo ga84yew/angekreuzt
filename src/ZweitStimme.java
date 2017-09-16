@@ -3,44 +3,82 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
+
 public class ZweitStimme {
-	public static String auswahl(String themen, String partei) {
-		String result = "";	
-	ArrayList<String> finanzen = new ArrayList<String>();
-	finanzen.addAll(Arrays.asList("finanzen", "steuern", "finanzpolitik", "steuerpolitik", "steuer", "wirtschaft", "verbraucherschutz", 
-			"verkehr und infrastruktur", "staedtebau"));
-	if (finanzen.contains(themen.toLowerCase())) {
-		result = SteuernundFinanzen.getText(partei);
-	}	
-	ArrayList<String> sicherheit = new ArrayList<String>();
-	sicherheit.addAll(Arrays.asList("innere sicherheit", "militaer", "demokratie", "terror", "bundeswehr", "verteidigung", "schutz der bevoelkerung"));
-	if (sicherheit.contains(themen.toLowerCase())) {
-		result = Sicherheit.getText(partei);
+	
+	private static CaseInsensitiveMap<String, String> mapSubGroupsToGroup; //mapping of subgroups to top level groups	
+	
+	public static String auswahl(String thema, String partei,GroupMapping mapping) {
+	String result = "";	//result STring
+		
+	// get group of thema
+	mapSubGroupsToGroup =mapping.mapSubGroupsToGroup; // get mapping subgroup to group
+	String group= mapSubGroupsToGroup.get(thema); // retrieve from map
+		
+	// set result string
+	switch( Delegate.lowercase(group) ){
+	case "finanzen":result = SteuernundFinanzen.getText(partei);
+	case "sicherheit":	result = Sicherheit.getText(partei);
+	case "bildung":	result = Bildung.getText(partei);
+	case "arbeitundsoziales":	result = ArbeitundSoziales.getText(partei);
+	case "euundaussenpolitik":	result = EUundAussenpolitik.getText(partei);
+	case "integrationundasyl":	result = IntegrationundAsyl.getText(partei);
 	}
-	ArrayList<String> bildung = new ArrayList<String>();
-	bildung.addAll(Arrays.asList("bildung", "digitalisierung", "kita", "kindergarten", "schulbildung", 
-			"schule", "ausbildung", "universität", "forschung", "schulsystem", "hochschule", "studium", "kultur", "kinder", "jugend"));
-	if (bildung.contains(themen.toLowerCase())) {
-		result = Bildung.getText(partei);	
-	}
-	ArrayList<String> arbeitundsoziales = new ArrayList<String>();
-	arbeitundsoziales.addAll(Arrays.asList("arbeit", "arbeitslosigkeit", "familenpolitik", "familie", "kinder", "kindergeld", 
-			"arbeitslosengeld", "eltern","frauen", "rente", "krankenversicherung", "gesundheit", "rentenversicherung", "ehe"));
-	if (arbeitundsoziales.contains(themen.toLowerCase())) {
-		result = ArbeitundSoziales.getText(partei);
-	}
-	List<String> euundaussenpolitik = new ArrayList<String>();
-	euundaussenpolitik.addAll(Arrays.asList("europa", "europaeische union", "ausland", "auslandspolitik","eu", "russland", "usa", 
-			"amerika", "aussenpolitik", "tuerkei", "internationales"));
-	if (euundaussenpolitik.contains(themen.toLowerCase())) {
-		result = EUundAussenpolitik.getText(partei);
-	}
-	ArrayList<String> integrationundasyl = new ArrayList<String>();
-	integrationundasyl.addAll(Arrays.asList("integration", "asyl", "fluechtlinge", "immigration", "einwanderung", 
-			"Asylbewerber", "Einwanderungspolitik"));
-	if (integrationundasyl.contains(themen.toLowerCase())) {
-		result = IntegrationundAsyl.getText(partei);
-	}
+
 	return result;
 }
 }
+
+
+/*	
+ArrayList<String> finanzen = Themen.finanzen;
+=new ArrayList<String>();
+finanzen.addAll(Arrays.asList("finanzen", "steuern", "finanzpolitik", "steuerpolitik", "steuer", "wirtschaft", "verbraucherschutz", 
+"verkehr und infrastruktur", "staedtebau"));
+
+if (Delegate.lowercase(group).equals("finanzen")){
+r
+}	
+ArrayList<String> sicherheit = Themen.sicherheit ;
+	=new ArrayList<String>();
+sicherheit.addAll(Arrays.asList("innere sicherheit", "militaer", "demokratie", "terror", "bundeswehr", "verteidigung", "schutz der bevoelkerung"));
+if (sicherheit.contains(themen.toLowerCase())) {
+
+}
+
+
+
+= new ArrayList<String>();
+ArrayList<String> bildung   = Themen.bildung;
+bildung.addAll(Arrays.asList("bildung", "digitalisierung", "kita", "kindergarten", "schulbildung", 
+"schule", "ausbildung", "universität", "forschung", "schulsystem", "hochschule", "studium", "kultur", "kinder", "jugend"));
+
+if (Delegate.lowercase(group).equals(bildung.contains(thema.toLowerCase())) {
+;	
+}
+ArrayList<String> arbeitundsoziales =Themen.arbeitundsoziales;
+= new ArrayList<String>();
+arbeitundsoziales.addAll(Arrays.asList("arbeit", "arbeitslosigkeit", "familenpolitik", "familie", "kinder", "kindergeld", 
+"arbeitslosengeld", "eltern","frauen", "rente", "krankenversicherung", "gesundheit", "rentenversicherung", "ehe"));
+
+
+if (arbeitundsoziales.contains(thema.toLowerCase())) {
+
+}
+List<String> euundaussenpolitik = Themen.euundaussenpolitik;
+		new ArrayList<String>();
+euundaussenpolitik.addAll(Arrays.asList("europa", "europaeische union", "ausland", "auslandspolitik","eu", "russland", "usa", 
+"amerika", "aussenpolitik", "tuerkei", "internationales"));
+
+if (euundaussenpolitik.contains(thema.toLowerCase())) {
+
+}
+ArrayList<String> integrationundasyl = Themen.integrationundasyl;
+new ArrayList<String>();
+integrationundasyl.addAll(Arrays.asList("integration", "asyl", "fluechtlinge", "immigration", "einwanderung", 
+"Asylbewerber", "Einwanderungspolitik"));
+
+if (integrationundasyl.contains(thema.toLowerCase())) {
+result 
+}*/

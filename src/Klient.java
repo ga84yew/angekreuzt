@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -89,6 +90,19 @@ public class Klient {
 		 }
 	 }
 	
+	private boolean answerIsNotEmpty(Question localQ){
+		// question found:
+			if (!localQ.getAnswers().isEmpty()){
+				if (!localQ.getAnswers().get(0).getSummary().isEmpty()){
+					//Answer not empty
+					this.question=localQ; // set question
+					return true;  //question found return true
+				}
+			}	
+			return false;
+	}
+	
+	
 	
 	/**
 	 * check if it is possible to get an answer from the person, defined in the SingleProfile sp, to a question from the subGroup
@@ -112,9 +126,12 @@ public class Klient {
 			// question found:
 			if (localQ.getCategory().toLowerCase().contains(subGroup.toLowerCase())){ //subGroup is contained
 				
-				if (!localQ.getAnswers().isEmpty()){ //Answer not empty
-					this.question=localQ; // set question
-					return true;  //question found return true
+				if (!localQ.getAnswers().isEmpty()){
+					if (!localQ.getAnswers().get(0).getSummary().isEmpty()){
+						//Answer not empty
+						this.question=localQ; // set question
+						return true;  //question found return true
+					}
 				}			
 			}
 			//save all subGroups answered, step2
@@ -149,11 +166,15 @@ public class Klient {
 			for (String similarSubGroup:similarSubGroups){ //iterate over similar subgroups
 				for (String subGroupInQuestion:allAnsweredQuestionGroups){ //iterate over answered subGroups
 						if(subGroupInQuestion.toLowerCase().equals(similarSubGroup.toLowerCase())){ //if any answered subGruoup Question equals any of the similar subgroups
+							
+							if (answerIsNotEmpty(allAnsweredQuestions.get(i))){
 							index=i;
 							this.question=allAnsweredQuestions.get(index); // set question to the new question, which answers to new SubGroup
 							this.subGroup=this.question.getCategory().toLowerCase(); //set SubGroup to Category contained in selected question
+							
 							subGroupReplaced=true; //indicate that subGroup has been replaced
 							return true; //question found return true
+							}
 						}
 					i++;
 				}

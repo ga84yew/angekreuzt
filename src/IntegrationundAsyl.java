@@ -28,7 +28,7 @@ public class IntegrationundAsyl {
 			if (doc != null) {
 				result = extractInformation(result, doc, 10, 11);
 			}
-		} else if (partei.equals("Grüne") || partei.equals("gruene"))  {
+		} else if (partei.equals("Grüne") || partei.equals("gr�nen"))  {
 			if (doc != null) {
 				result = extractInformation(result, doc, 14, 15);
 			}

@@ -27,7 +27,7 @@ public class SteuernundFinanzen {
 			if (doc != null) {
 				result = extractInformation(result, doc, 18, 21);
 			}
-		} else if (partei.toLowerCase().equals("gruene"))  {
+		} else if (partei.toLowerCase().equals("grünen"))  {
 			if (doc != null) {
 				result = extractInformation(result, doc, 23, 25);
 			}

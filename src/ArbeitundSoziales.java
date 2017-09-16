@@ -29,7 +29,7 @@ public class ArbeitundSoziales {
 			if (doc != null) {
 				result = extractInformation(result, doc, 28, 37);
 			}
-		} else if (partei.toLowerCase().equals("gruene"))  {
+		} else if (partei.toLowerCase().equals("grünen"))  {
 			if (doc != null) {
 				result = extractInformation(result, doc, 38, 47);
 			}

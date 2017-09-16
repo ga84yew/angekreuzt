@@ -28,7 +28,7 @@ public class Sicherheit  {
 			if (doc != null) {
 				result = extractInformation(result, doc, 27, 28);
 			}
-		} else if (partei.toLowerCase().equals("gruene")) {
+		} else if (partei.toLowerCase().equals("grünen")) {
 			if (doc != null) {
 				result = extractInformation(result, doc, 30, 33);
 			}
