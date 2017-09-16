@@ -65,7 +65,7 @@ public class AngekreuztSpeechlet implements Speechlet {
 	 * 	jeder fall ruft eine eigene newAskResponse auf
 	 *  bei Alexa cancel oder stop wird beendet
 	 *  bei Nichterkennugn wird eine Hilfestellug ausgegeben.
-	 * "r" übergeben.
+	 * 
 	 * 
 	 * @param arg0
 	 *            IntentRequest pipa
@@ -102,7 +102,7 @@ public class AngekreuztSpeechlet implements Speechlet {
 				
 				return newAskResponse("Bitte versuche es noch einmal",false,shortRepromptErststimmeString());
 
-		}else if (intentName.equals("AMAZON.StopIntent") || input.equals("AMAZON.CancelIntent")) {
+		}else if (intentName.equals("AMAZON.StopIntent") || intentName.equals("AMAZON.CancelIntent")) {
 	
 			PlainTextOutputSpeech outputSpeech = new PlainTextOutputSpeech();
             outputSpeech.setText("Servus");
