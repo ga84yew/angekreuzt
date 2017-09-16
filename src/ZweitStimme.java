@@ -15,17 +15,14 @@ public class ZweitStimme {
 	// get group of thema
 	mapSubGroupsToGroup =mapping.mapSubGroupsToGroup; // get mapping subgroup to group
 	String group= mapSubGroupsToGroup.get(thema); // retrieve from map
-		
-	// set result string
-	switch( Delegate.lowercase(group) ){
-	case "finanzen":result = SteuernundFinanzen.getText(partei);
-	case "sicherheit":	result = Sicherheit.getText(partei);
-	case "bildung":	result = Bildung.getText(partei);
-	case "arbeitundsoziales":	result = ArbeitundSoziales.getText(partei);
-	case "euundaussenpolitik":	result = EUundAussenpolitik.getText(partei);
-	case "integrationundasyl":	result = IntegrationundAsyl.getText(partei);
-	}
-
+	
+	if(group.equals(("finanzen"))){result = SteuernundFinanzen.getText(partei);}
+	else if(group.equals(("sicherheit"))){	result = Sicherheit.getText(partei);}
+	else if(group.equals(("bildung"))){	result = Bildung.getText(partei);}
+	else if(group.equals(("arbeitundsoziales"))){	result = ArbeitundSoziales.getText(partei);}
+	else if(group.equals(("euundaussenpolitik"))){	result = EUundAussenpolitik.getText(partei);}
+	else if(group.equals(("integrationundasyl"))){	result = IntegrationundAsyl.getText(partei);}
+	
 	return result;
 }
 }

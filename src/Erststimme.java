@@ -94,6 +94,8 @@ public class Erststimme {
 
 	}
 	
+	public Erststimme() {}
+
 	/**
 	 * Erststimme is called with 
 	 * @param subGroup String representing context
@@ -101,7 +103,7 @@ public class Erststimme {
 	 * calls setText with the same params
 	 * @return SpeechletResponse for audio output to Alexa
 	 */
-	public SsmlOutputSpeech call(String subGroup, String candidateFullname) {
+	public String call(String subGroup, String candidateFullname) {
 		/* testing purpose
 		String contentOfCategory = "Familie";
 		String contentOfFirstname = parliamentProfile.getProfiles().get(0).getPersonal().getFirstName();
@@ -113,19 +115,15 @@ public class Erststimme {
 		// set selected
 		this.chosenSubGroup=subGroup;
 		
-		// local value strings for output to Alexa including dummy texts
-		SsmlOutputSpeech text = new SsmlOutputSpeech();
-		text.setSsml(SpeechHelper.wrapInSpeak("Text not set"));
-		String set = new String("Text not set"); // string for use setSsml()
+		// local value strings for output to Alexa including dummy ;
+		String set = new String("Text not set");
 		
 		try {	// get String in format for Alexa from textFromProfile, using Klient
 		set = textFromProfile(candidateFullname);
 		} catch (IOException e) {		e.printStackTrace();	}
 		System.out.println(set);
 
-		// set text
-		text.setSsml(set);
-		return text;
+		return set;
 	}
 
 	/**

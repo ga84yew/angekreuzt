@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.net.MalformedURLException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -20,10 +22,18 @@ import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SimpleCard;
 import com.amazon.speech.ui.SsmlOutputSpeech;
 
+import parliament2profile.Parliament;
+
 public class AngekreuztSpeechlet implements Speechlet {
 
 	private static final Logger log = LoggerFactory.getLogger(AngekreuztSpeechlet.class);
+	private static String first = "Willkommen, du kannst nach Parteien, Themen und Kandidaten fragen";
+	private static String second = "zum Beispiel";
+	private static String third = "was denkt die Partei X zum Thema Integration,Sicherheit, E U Aussenpolitik, Bildung, Arbeit, Finanzen und Steuern?";
+	private static String fourth = "Du kannst auch jeden Direktkandidaten zu den Themen fragen";
+	private static String firstRe = "Es sind die Themen Bildung, Soziales, Integration, Aussenpolitik, Sicherheit und Steuern und Finanzen erfasst";
 
+	
 	public SpeechletResponse onLaunch(final LaunchRequest request, final Session session) throws SpeechletException {
 		log.info("onLaunch requestId={}, sessionId={}", request.getRequestId(), session.getSessionId());
 		return getWelcomeResponse();
@@ -37,30 +47,15 @@ public class AngekreuztSpeechlet implements Speechlet {
 	 * @return
 	 */
 	private SpeechletResponse getWelcomeResponse() {
-		Reprompt reprompt = createReprompt(longRepromptString());
-		
-		String first = "Willkommen, du kannst nach Parteien, Themen und Kandidaten fragen";
-		String second = "zum Beispiel";
-		String third = "was denkt die Partei XY zum Thema Integration,Sicherheit, E U Aussenpolitik, Bildung, Arbeit, Finanzen und Steuern?";
-		String fourth = "Du kannst auch jeden Direktkandidaten zu den Themen fragen";
-
-		String text = SpeechHelper.wrapInSpeak(first);
-		// + SpeechHelper.createBreak(1)
-		// +second
-		// + SpeechHelper.createBreak(1)
-		// +third
-		// + SpeechHelper.createBreak(1)
-		// + fourth);
-
-		SsmlOutputSpeech output = new SsmlOutputSpeech();
-		output.setSsml(text);
+				
+		String output = SpeechHelper.wrapInSpeak(first);
 
 		// Create the Simple card content.
 		SimpleCard card = new SimpleCard();
 		card.setTitle("Angekreuzt");
 		card.setContent(first + second + third + fourth);
 
-		return SpeechletResponse.newAskResponse(output, reprompt);
+		return newAskResponse(output, true, longRepromptString());
 	}
 
 	/**
@@ -78,66 +73,98 @@ public class AngekreuztSpeechlet implements Speechlet {
 		// define Themen
 		Themen themes = new Themen();
 		Reprompt longreprompt = createReprompt(longRepromptString());
+		SpeechletResponse r = new SpeechletResponse();
 
-		Intent intent = arg0.getIntent();
-		String input = intent.getName();
-		PlainTextOutputSpeech text = new PlainTextOutputSpeech();
+		Intent intent = arg0.getIntent();String input = intent.getName();
+
 		String result = "";
 
 		if (input.equals("wahlsys")) {
 			result = Wahlsystem.getText();
-			text.setText(result);
-			return SpeechletResponse.newAskResponse(text, createReprompt(shortRepromptWahlsysString()));
+			return newAskResponse(result,false,shortRepromptWahlsysString());
 
 		} else if (input.equals("zweitstimme")) {
 			String themen = intent.getSlot("themen").getValue();
 			String partei = intent.getSlot("partei").getValue();
 			result = ZweitStimme.auswahl(themen, partei, themes.mapping);
-			text.setText(result);
-			return SpeechletResponse.newAskResponse(text,  createReprompt(shortRepromptZweitstimmeString()));
+			return newAskResponse(result,false,shortRepromptZweitstimmeString());
 
 		} else if (input.equals("erststimme")) {
-
 			String themen = intent.getSlot("themen").getValue();
 			String fullname = intent.getSlot("kandidat").getValue();
+			
+				try {
+				Parliament parliament = new Parliament(); parliament.setName("Bundestag");	
+				Erststimme erstestimme = new Erststimme(parliament.getName(), themes.mapping);
+				return newAskResponse(erstestimme.call(themen, fullname), true, shortRepromptErststimmeString());
+				} catch (MalformedURLException e) {e.printStackTrace();
+				} catch (IOException e) {e.printStackTrace();} 
+				
+				return newAskResponse("Bitte versuche es noch einmal",false,shortRepromptErststimmeString());
 
-			try {
-				Erststimme erstestimme = new Erststimme("Bundestag", themes.mapping);
-				return SpeechletResponse.newAskResponse(erstestimme.call(themen, fullname), createReprompt(shortRepromptErststimmeString()));
+		}else if (input.equals("AMAZON.StopIntent") || input.equals("AMAZON.CancelIntent")) {
+	
+			PlainTextOutputSpeech outputSpeech = new PlainTextOutputSpeech();
+            outputSpeech.setText("Servus");
+            return SpeechletResponse.newTellResponse(outputSpeech);
 
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			/*
-			 * } else if(input.equals("nichterkannt")) {
-			 * 
-			 * text.
-			 * setText("Bitte wiederhole deine Anfrage und nuschel nicht so.");
-			 * return SpeechletResponse.newAskResponse(text, reprompt);
-			 */
-
-		} else if (input.equals("AMAZON.StopIntent") || input.equals("AMAZON.CancelIntent")) {
-
-			text.setText("Servus");
-			return SpeechletResponse.newTellResponse(text);
-
-		} else {
-
-			text.setText("Bitte wiederhole deine Anfrage");
-			return SpeechletResponse.newAskResponse(text, createReprompt("Leider habe ich dich nicht verstanden"));
+		}else{
+			String speechOutput = second
+					+SpeechHelper.createBreak(1) 
+					+third
+					+SpeechHelper.createBreak(1)
+					+fourth;
+ 		    String repromptText =SpeechHelper.wrapInSpeak("Bitte stelle eine Frage");
+		    return newAskResponse(speechOutput, true, repromptText);
 		}
-		return SpeechletResponse.newAskResponse(text, longreprompt);
 	}
 
+	
+	   /**
+     * Wrapper for creating the Ask response from the input strings.
+     * 
+     * @param stringOutput
+     *            the output to be spoken
+     * @param isOutputSsml
+     *            whether the output text is of type SSML
+     * @param repromptText
+     *            the reprompt for if the user doesn't reply or is misunderstood.
+     * @param isRepromptSsml
+     *            whether the reprompt text is of type SSML
+     * @return SpeechletResponse the speechlet response
+     */
+    private SpeechletResponse newAskResponse(String stringOutput, boolean isOutputSsml,
+            String repromptText) {
+    	boolean isRepromptSsml = true;
+        OutputSpeech outputSpeech, repromptOutputSpeech;
+        if (isOutputSsml) {
+            outputSpeech = new SsmlOutputSpeech();
+            ((SsmlOutputSpeech) outputSpeech).setSsml(stringOutput);
+        } else {
+            outputSpeech = new PlainTextOutputSpeech();
+            ((PlainTextOutputSpeech) outputSpeech).setText(stringOutput);
+        }
+
+        if (isRepromptSsml) {
+            repromptOutputSpeech = new SsmlOutputSpeech();
+            ((SsmlOutputSpeech) repromptOutputSpeech).setSsml(repromptText);
+        } else {
+            repromptOutputSpeech = new PlainTextOutputSpeech();
+            ((PlainTextOutputSpeech) repromptOutputSpeech).setText(repromptText);
+        }
+        Reprompt reprompt = new Reprompt();
+        reprompt.setOutputSpeech(repromptOutputSpeech);
+        return SpeechletResponse.newAskResponse(outputSpeech, reprompt);
+    }
+	
+	
 	/**
 	 * @return reprompt for output in Alexa
 	 */
 	private Reprompt createReprompt(String gegenantwort) {
-		SsmlOutputSpeech antworten = new SsmlOutputSpeech();		antworten.setSsml(gegenantwort);
+		SsmlOutputSpeech antworten = new SsmlOutputSpeech();antworten.setSsml(gegenantwort);
 		Reprompt reprompt = new Reprompt();		reprompt.setOutputSpeech(antworten);
 		return reprompt;
-
 	}
 
 	/**
@@ -145,16 +172,15 @@ public class AngekreuztSpeechlet implements Speechlet {
 	 */
 	private String longRepromptString() {
 		// Create reprompt
-		String firstRe = "Schön, dass du dich über die Wahl am 24.September informieren willst. Das ist Super. Wähle ja keinen Schmarrn.";
-
-		String secondRe = "Ok also, frag mich zum Beispiel wie funktioniert die Wahl in Deutschland oder frage zum Beispiel was denkt Kandidat xy über Bildung, Arbeit und Soziales, Integration und "
+		String nice = "Schön, dass du dich über die Wahl am 24.September informieren willst. Das ist Super. Wähle ja keinen Schmarrn.";
+		String secondRe = "Ok also, frag mich zum Beispiel wie funktioniert die Wahl in Deutschland oder frage zum Beispiel was denkt Kandidat X über Bildung, Arbeit und Soziales, Integration und "
 				+ "Asyl, E U und Aussenpolitik, Sicherheit und Steuern und Finanzen.";
 		String thirdRe = "Oder denk an deine Zweitstimme und frage ganz einfach:"
-				+ "was sagt die Partei xy über das thema Bildung, Sicherheit, Steuern und Finanzen, Integration und Asyl"
+				+ "was sagt die Partei Y über das Thema Bildung, Sicherheit, Steuern und Finanzen, Integration und Asyl"
 				+ ", E U und Aussenpolitik und Arbeit und Soziales.";
 		String fourthRe = "Du kannst also direkt alle Kandidaten aller Wahlkreise oder die Parteien befragen. Yeah man.";
 
-		String gegenantwort = SpeechHelper.wrapInSpeak(firstRe + SpeechHelper.createBreak(1) + secondRe
+		String gegenantwort = SpeechHelper.wrapInSpeak(nice + SpeechHelper.createBreak(1) + secondRe
 				+ SpeechHelper.createBreak(1) + thirdRe + SpeechHelper.createBreak(1) + fourthRe);
 		return gegenantwort;
 	}
@@ -162,39 +188,22 @@ public class AngekreuztSpeechlet implements Speechlet {
 	
 	private String shortRepromptErststimmeString() {
 		// Create reprompt
-		String firstRe = "Es sind die Themen Bildung, Soziales, Integration, Aussenpolitik, Sicherheit und Steuern und Finanzen erfasst";
-
-		String secondRe = "Beispiel zum Direktkandaten: was denkt Kandidat, z.B. Florian Post über Integration";
-		String thirdRe = "";
+	    String secondRe = "Beispiel zum Direktkandidaten: was denkt Kandidat, z.B. Florian Post über Wirtschaft";
 		String fourthRe = "Du kannst also direkt alle Kandidaten aller Wahlkreise mit vollem Namen auswählen";
-
 		String gegenantwort = SpeechHelper.wrapInSpeak(firstRe + SpeechHelper.createBreak(1) + secondRe
-				+ SpeechHelper.createBreak(1) + thirdRe + SpeechHelper.createBreak(1) + fourthRe);
+				+ SpeechHelper.createBreak(1)  + SpeechHelper.createBreak(1) + fourthRe);
 		return gegenantwort;
 	}
 	
 	private String shortRepromptZweitstimmeString() {
 		// Create reprompt
-		String firstRe = "Es sind die Themen Bildung, Soziales, Integration, Aussenpolitik, Sicherheit und Steuern und Finanzen erfasst";
-
-		String secondRe = "Beispiel zur Zweitstimme: wie möchte die CDU die Wirtschaft stärken";
-		String thirdRe = "";
-		String fourthRe = "Du kannst also direkt alle Kandidaten aller Wahlkreise mit vollem Namen auswählen";
-
-		String gegenantwort = SpeechHelper.wrapInSpeak(firstRe + SpeechHelper.createBreak(1) + secondRe
-				+ SpeechHelper.createBreak(1) + thirdRe + SpeechHelper.createBreak(1) + fourthRe);
+		String secondRe = "Beispiel zur Zweitstimme: wie möchte die CDU die Wirtschaft stärken?";
+		String gegenantwort = SpeechHelper.wrapInSpeak(firstRe + SpeechHelper.createBreak(1) + secondRe);
 		return gegenantwort;
 	}
 	
 	private String shortRepromptWahlsysString() {
-		// Create reprompt
-		String firstRe = "";
-		String secondRe = "Beispiel zum Wahlsystem: Wie wird gewählt?";
-		String thirdRe = "";
-		String fourthRe = "";
-
-		String gegenantwort = SpeechHelper.wrapInSpeak(firstRe + SpeechHelper.createBreak(1) + secondRe
-				+ SpeechHelper.createBreak(1) + thirdRe + SpeechHelper.createBreak(1) + fourthRe);
+		String gegenantwort = SpeechHelper.wrapInSpeak("Beispiel zum Wahlsystem: " + SpeechHelper.createBreak(1) + " Wie wird gewählt?");
 		return gegenantwort;
 	}
 	

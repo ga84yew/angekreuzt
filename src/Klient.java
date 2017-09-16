@@ -35,14 +35,13 @@ public class Klient {
 	private SingleProfile candidateProfile; // candidate Profile containing all questions from the candidate 
 	private Question question; //answer and subGruop are contained here, getAnswer() uses this attribute to concatenate answer String
 	private boolean subGroupReplaced=false; // true if subGroup was replaced by similar subGroup
+	private String subGroupOld=""; // old subgroup is stored here
 	
 	/**
 	 * constructor Klient(subGroup)  sets attributes subGroup,
 	 * @param subGroup String representing the political context
 	 */
-	public Klient(String subGroup){
-		this.subGroup=subGroup;
-	}
+	public Klient(String subGroup){	this.subGroup=subGroup;	}
 	
 	/**
 	 * Klient.getText() is called to return a question to the category from a profile, which is available via the String questionUrl
@@ -90,6 +89,11 @@ public class Klient {
 		 }
 	 }
 	
+	/**
+	 * check if it is answer or summary in answer are not empty
+	 * @param localQ Question, which includes answer
+	 * @return boolean , true if answer or summary in answer are not empty
+	 */
 	private boolean answerIsNotEmpty(Question localQ){
 		// question found:
 			if (!localQ.getAnswers().isEmpty()){
@@ -125,10 +129,9 @@ public class Klient {
 			
 			// question found:
 			if (localQ.getCategory().toLowerCase().contains(subGroup.toLowerCase())){ //subGroup is contained
-				
 				if (!localQ.getAnswers().isEmpty()){
 					if (!localQ.getAnswers().get(0).getSummary().isEmpty()){
-						//Answer not empty
+						//Answer and Summary in answer not empty
 						this.question=localQ; // set question
 						return true;  //question found return true
 					}
@@ -170,8 +173,8 @@ public class Klient {
 							if (answerIsNotEmpty(allAnsweredQuestions.get(i))){
 							index=i;
 							this.question=allAnsweredQuestions.get(index); // set question to the new question, which answers to new SubGroup
+							this.subGroupOld=this.subGroup; //store subGroup that will be replaced
 							this.subGroup=this.question.getCategory().toLowerCase(); //set SubGroup to Category contained in selected question
-							
 							subGroupReplaced=true; //indicate that subGroup has been replaced
 							return true; //question found return true
 							}
@@ -194,12 +197,14 @@ public class Klient {
 	private String getAnswer(){
 		
 		String s=this.question.getAnswers().get(0).getSummary();
-		
+		String opt="";
 		//include if subGroup was replaced with similar subgroup during Search
-		if (this.subGroupReplaced) { s=s+ "Das ursprünglichl gewünschte Thema wurde leider nicht beantwortet."; } 
-		
+		if (this.subGroupReplaced) {
+			opt="Das ursprünglichl gewünschte Thema "+subGroupOld+" wurde leider nicht beantwortet."
+			+ "das ähnliche Thema" + subGroup + "aber schon";}
+	
 		return
-		(SpeechHelper.wrapInSpeak("Hallo "+ SpeechHelper.createBreak(1) 
+		(SpeechHelper.wrapInSpeak("Hallo "+ SpeechHelper.createBreak(1) +opt
 		+firstname +" "+lastname
 		+" hat eine Meinung zum Thema " +subGroup 
 		+ SpeechHelper.createBreak(1) 
@@ -214,8 +219,8 @@ public class Klient {
 	 * @return String representing the Dummy a answer
 	 */
 	private String noAnswerfromKlient(){
-		return (SpeechHelper.wrapInSpeak("Hello,"+ SpeechHelper.createBreak(1) 
+		return (SpeechHelper.wrapInSpeak("Hallo,"+ SpeechHelper.createBreak(1) 
 		+firstname +" "+lastname
-		+" hat das Thema " +this.subGroup+" nicht beantwortet."));
+		+" hat das Thema " +this.subGroup+" leider nicht beantwortet."));
 	}
 }
