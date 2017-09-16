@@ -62,7 +62,9 @@ public class AngekreuztSpeechlet implements Speechlet {
 	 * Die drei unterschiedlichen Intents werden in drei Bedinungen abgefragt:
 	 * Das Intent "wahlsys" übergibt den Slottypen "wahlsystem" als String an
 	 * die Methode "auswaehlen in der Klasse "Wahlthema" und ruft diese auf.
-	 * Schließlich wird das Result dann wieder an das "SpeechletResponse"-Objekt
+	 * 	jeder fall ruft eine eigene newAskResponse auf
+	 *  bei Alexa cancel oder stop wird beendet
+	 *  bei Nichterkennugn wird eine Hilfestellug ausgegeben.
 	 * "r" übergeben.
 	 * 
 	 * @param arg0
@@ -72,24 +74,22 @@ public class AngekreuztSpeechlet implements Speechlet {
 	public SpeechletResponse onIntent(IntentRequest arg0, Session arg1) throws SpeechletException {
 		// define Themen
 		Themen themes = new Themen();
-		Reprompt longreprompt = createReprompt(longRepromptString());
-		SpeechletResponse r = new SpeechletResponse();
-
-		Intent intent = arg0.getIntent();String input = intent.getName();
+		//get intentName
+		Intent intent = arg0.getIntent();String intentName = intent.getName();
 
 		String result = "";
 
-		if (input.equals("wahlsys")) {
+		if (intentName.equals("wahlsys")) {
 			result = Wahlsystem.getText();
 			return newAskResponse(result,false,shortRepromptWahlsysString());
 
-		} else if (input.equals("zweitstimme")) {
+		} else if (intentName.equals("zweitstimme")) {
 			String themen = intent.getSlot("themen").getValue();
 			String partei = intent.getSlot("partei").getValue();
 			result = ZweitStimme.auswahl(themen, partei, themes.mapping);
 			return newAskResponse(result,false,shortRepromptZweitstimmeString());
 
-		} else if (input.equals("erststimme")) {
+		} else if (intentName.equals("erststimme")) {
 			String themen = intent.getSlot("themen").getValue();
 			String fullname = intent.getSlot("kandidat").getValue();
 			
@@ -102,7 +102,7 @@ public class AngekreuztSpeechlet implements Speechlet {
 				
 				return newAskResponse("Bitte versuche es noch einmal",false,shortRepromptErststimmeString());
 
-		}else if (input.equals("AMAZON.StopIntent") || input.equals("AMAZON.CancelIntent")) {
+		}else if (intentName.equals("AMAZON.StopIntent") || input.equals("AMAZON.CancelIntent")) {
 	
 			PlainTextOutputSpeech outputSpeech = new PlainTextOutputSpeech();
             outputSpeech.setText("Servus");
@@ -122,15 +122,10 @@ public class AngekreuztSpeechlet implements Speechlet {
 	
 	   /**
      * Wrapper for creating the Ask response from the input strings.
-     * 
-     * @param stringOutput
-     *            the output to be spoken
-     * @param isOutputSsml
-     *            whether the output text is of type SSML
-     * @param repromptText
-     *            the reprompt for if the user doesn't reply or is misunderstood.
-     * @param isRepromptSsml
-     *            whether the reprompt text is of type SSML
+     * @param stringOutput the output to be spoken
+     * @param isOutputSsml whether the output text is of type SSML
+     * @param repromptText the reprompt for if the user doesn't reply or is misunderstood.
+     * @param isRepromptSsml  whether the reprompt text is of type SSML
      * @return SpeechletResponse the speechlet response
      */
     private SpeechletResponse newAskResponse(String stringOutput, boolean isOutputSsml,
@@ -158,15 +153,7 @@ public class AngekreuztSpeechlet implements Speechlet {
     }
 	
 	
-	/**
-	 * @return reprompt for output in Alexa
-	 */
-	private Reprompt createReprompt(String gegenantwort) {
-		SsmlOutputSpeech antworten = new SsmlOutputSpeech();antworten.setSsml(gegenantwort);
-		Reprompt reprompt = new Reprompt();		reprompt.setOutputSpeech(antworten);
-		return reprompt;
-	}
-
+	
 	/**
 	 * @return
 	 */
