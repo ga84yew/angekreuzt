@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 /**
  * Delegate is used for String retrieving and manipulation
  * @author Rainer Wichmann
@@ -82,4 +84,20 @@ public final class Delegate {
 		String result= Jsoup.parse(text).text();
 		return result.replaceAll("\\((.+?)\\)", "");
 	}
+	
+	/**
+	* This method is called by the getText method. A for-loop is used to define the parts of the document to be retrieved.
+	* @param String result, which is returned, comprises a specified part of a document's body text.
+	* @param doc, which is the HTML document.
+	* @param int start and int ende, which define indices to determine the desired extract of the document. 
+	* @return returns the desired part of the document as a String.
+	*/
+		public static String extractInformation(String result, Document doc, int start, int ende) {
+			Elements party = doc.body().select("p.bodytext");
+			for(int index = start; index <=ende;index++) {
+				result += party.get(index).text();
+				result = result.replaceAll("\\((.+?)\\)", "");
+			}
+			return result;
+		}
 }

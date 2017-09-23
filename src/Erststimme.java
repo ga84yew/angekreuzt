@@ -28,9 +28,9 @@ import parliament2profile.*;
  * accesses remote  json data at abgeordnetenwatch.de or local for retrieving  information about the candidates of a parliament
  * if local, the parliament data is all contained in src/resources/parliament2profile.json
  * if remote the json file is mapped after creating the url. For creating the url the parliamentName is necessary.
- * It is possible to call the Erststimme to receive a SpeechletResponse including a answer to a political context for Alexa output
- * A context is called subGroup and they have common top level Groups. Mapping is done via class Themen, which has a GroupMapping attribute.
- * A question includes answer and subGruop, which is called category according to json profile of abgeordnetenwatch.de
+ * It is possible to call the Erststimme to receive a SpeechletResponse including a answer to a political category for Alexa output
+ * common category have a common top level Group. Mapping is done via class Themen, which has a GroupMapping attribute.
+ * A question includes answer and category according to json profile of abgeordnetenwatch.de
  * A Klient instance is created with a subGruop and used with a url for retrieving the answer to a questions from this context.
  * @author Rainer Wichmann
  * @version 1.0, 15.9.2017
@@ -44,21 +44,21 @@ public class Erststimme {
 	 */
     private Parliament parliament; 
 	private Parliament2Profile parliamentProfiles; //all profile from the requested parliament
-	private CaseInsensitiveMap<String, String> mapSubGroupsToGroup; //mapping of subgroups to top level groups
-	private String chosenSubGroup; //contains the subgroup the client has asked for
+	private CaseInsensitiveMap<String, String> mapCategorysToGroup; //mapping of Categorys to top level groups
+	private String chosenCategory; //contains the Category the client has asked for
 	private String getDataUrl1, getDataUrl2; //URL String for constructing questionUrl
 	private String questionUrl; // URL where questions of a profile are stored
 	private String thesesUrl;  // URL where theses of a profile are stored
 	
 	/**
 	 * chosenCategory can be set to enable flexible answer to a different, hopefully similar issue
-	 * @param subGroup String representing the context
+	 * @param category String representing the context
 	 */
-	public void setChosenSubGroup(String subGroup) { this.chosenSubGroup = subGroup; }
+	public void setChosenCategory(String category) { this.chosenCategory = category; }
 
 	//
 	/**
-	 * Creates a Erststimme by setting Attribs: mapSubGroupsToGroup, String getDataUrl1, String getDataUrl2 , Parliament parliament, parliamentProfile
+	 * Creates a Erststimme by setting Attribs: mapCategorysToGroup, String getDataUrl1, String getDataUrl2 , Parliament parliament, parliamentProfile
 	 * and stores the profiles of the Parliament in profiles.json locally
 	 * @param parliamentName type String, Name of parliament as used in abgeordnetenwatch.de, mainly necessary for accessing parliament2profile.json from remote to create url
 	 * @param mapping GroupMapping of political contexts, created in class Themen 
@@ -70,8 +70,8 @@ public class Erststimme {
 		parliament = new Parliament(); parliament.setName(parliamentName); 
 		
 		
-		// set mapSubGroupsToGroup from list and 
-		this.mapSubGroupsToGroup =mapping.mapSubGroupsToGroup;
+		// set mapCategorysToGroup from list and 
+		this.mapCategorysToGroup =mapping.mapCategoryToGroup;
 		
 		//set attrib parliamentProfile:
 		//define mapper
@@ -98,12 +98,12 @@ public class Erststimme {
 
 	/**
 	 * Erststimme is called with 
-	 * @param subGroup String representing context
+	 * @param category String representing context
 	 * @param candidateFullname String representing the fullname of the candidate
 	 * calls setText with the same params
 	 * @return SpeechletResponse for audio output to Alexa
 	 */
-	public String call(String subGroup, String candidateFullname) {
+	public String call(String category, String candidateFullname) {
 		/* testing purpose
 		String contentOfCategory = "Familie";
 		String contentOfFirstname = parliamentProfile.getProfiles().get(0).getPersonal().getFirstName();
@@ -113,7 +113,7 @@ public class Erststimme {
 		 String contentOfLastname = getData.getSlot("nachname").getValue();
 		 */
 		// set selected
-		this.chosenSubGroup=subGroup;
+		this.chosenCategory=category;
 		
 		// local value strings for output to Alexa including dummy ;
 		String set = new String("Text not set");
@@ -121,7 +121,7 @@ public class Erststimme {
 		try {	// get String in format for Alexa from textFromProfile, using Klient
 		set = textFromProfile(candidateFullname);
 		} catch (IOException e) {		e.printStackTrace();	}
-		System.out.println(set);
+		//System.out.println(set);
 
 		return set;
 	}
@@ -138,8 +138,8 @@ public class Erststimme {
 			throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
 		String set;
 
-		// subGroup is available
-		if (mapSubGroupsToGroup.containsKey(chosenSubGroup)){
+		// category is available
+		if (mapCategorysToGroup.containsKey(chosenCategory)){
 
 			// get correct Profile p
 			ListIterator<Profile> it = parliamentProfiles.getProfiles().listIterator();
@@ -166,22 +166,22 @@ public class Erststimme {
 			this.getDataUrl1 = "https://www.abgeordnetenwatch.de/api/profile/"; // +angela-merkel+ = content from profile.meta.username
 			this.getDataUrl2 = "/profile.json";
 			this.questionUrl = getDataUrl1 + p.getMeta().getUsername()+ getDataUrl2;
-			System.out.println(questionUrl);
+			//System.out.println(questionUrl);
 			
 			 // url for answer to theses
 			this.thesesUrl = p.getMeta().getUrl();
-			System.out.println(thesesUrl);
+			//System.out.println(thesesUrl);
 			
 			
-			//create Klient, use it to get answer to Question concerning subGroup
-			Klient k = new Klient(chosenSubGroup);
+			//create Klient, use it to get answer to Question concerning Category
+			Klient k = new Klient(chosenCategory);
 			set = k.getText(questionUrl, this);
 
 			
 			
-		// subGroup not available
+		// Category not available
 		} else {
-			set = SpeechHelper.wrapInSpeak(wrongSubGroup(chosenSubGroup));
+			set = SpeechHelper.wrapInSpeak(wrongCategory(chosenCategory));
 		}
 		return set;
 	}
@@ -209,10 +209,10 @@ public class Erststimme {
 	
 	/**
 	 * called to get a response, when Erststimme is askeded for a category not included in database of categories
-	 * @param subGroup representing context, which is not found
+	 * @param category representing context, which is not found
 	 * @return String , which represents the explanation
 	 */
-	public String wrongSubGroup(String subGroup) {return subGroup + " wurde leider in der Themen-Datenbank nicht gefunden.";	}
+	public String wrongCategory(String category) {return category + " wurde leider in der Themen-Datenbank nicht gefunden.";	}
 	
 	
 }

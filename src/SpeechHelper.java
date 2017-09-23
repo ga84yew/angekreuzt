@@ -17,7 +17,7 @@ public class SpeechHelper {
  {return "<say-as interpret-as=\""+type+"\">"+s+"</say-as>";}
 
 
- public static String createBreak(int seconds)
+ public static String createBreak(double seconds)
  {return "<break time=\""+seconds+"s\"/>";	}
  
  }
