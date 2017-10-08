@@ -27,12 +27,7 @@ import parliament2profile.Parliament;
 public class AngekreuztSpeechlet implements Speechlet {
 
 	private static final Logger log = LoggerFactory.getLogger(AngekreuztSpeechlet.class);
-	private static String first = "Willkommen, du kannst nach Parteien, Themen und Kandidaten fragen";
-	private static String second = "zum Beispiel";
-	private static String third = "was denkt die Partei X zum Thema Integration,Sicherheit, E U Aussenpolitik, Bildung, Arbeit, Finanzen und Steuern?";
-	private static String fourth = "Du kannst auch jeden Direktkandidaten zu den Themen fragen";
-	private static String firstRe = "Es sind die Themen Bildung, Soziales, Integration, Aussenpolitik, Sicherheit und Steuern und Finanzen erfasst";
-
+	
 	public SpeechletResponse onLaunch(final LaunchRequest request, final Session session) throws SpeechletException {
 		log.info("onLaunch requestId={}, sessionId={}", request.getRequestId(), session.getSessionId());
 		return getWelcomeResponse();
@@ -41,18 +36,17 @@ public class AngekreuztSpeechlet implements Speechlet {
 	/**
 	 * Liest einen "Willkommen bei angekreuzt"-String, wenn der User den Skill
 	 * startet.
-	 * 
 	 * @return
 	 */
 	private SpeechletResponse getWelcomeResponse() {
-
-		String output = SpeechHelper.wrapInSpeak(first);
-
+	String welcomeString = "Willkommen, du kannst nach Parteien, Themen und Kandidaten fragen";
+	String secondVoteString = "was denkt die Partei X zum Thema Integration,Sicherheit, E U Aussenpolitik, Bildung, Arbeit, Finanzen und Steuern?";
+	String firstVoteString = "Du kannst auch jeden Direktkandidaten zu den Themen fragen";
+		String output = SpeechHelper.wrapInSpeak(welcomeString);
 		// Create the Simple card content.
 		SimpleCard card = new SimpleCard();
 		card.setTitle("Angekreuzt");
-		card.setContent(first + second + third + fourth);
-
+		card.setContent(welcomeString +  "zum Beispiel" + secondVoteString + firstVoteString);
 		return newAskResponse(output, true, longRepromptString());
 	}
 
@@ -63,106 +57,64 @@ public class AngekreuztSpeechlet implements Speechlet {
 	 * jeder fall ruft eine eigene newAskResponse auf bei Alexa cancel oder stop
 	 * wird beendet bei Nichterkennugn wird eine Hilfestellug ausgegeben.
 	 * 
-	 * @param arg0
-	 *            IntentRequest pipa
+	 * @param arg0 IntentRequest 
+	 * @param arg1 Session
 	 * @return SpeechletResponse for out to Alexa
 	 */
 	public SpeechletResponse onIntent(IntentRequest arg0, Session arg1) throws SpeechletException {
-		// define Themen
+		// get CategoryMap in themes
 		Themen themes = new Themen();
 		// get intentName
 		Intent intent = arg0.getIntent();
 		String intentName = intent.getName();
+		//set default output String
+		String result =SpeechHelper.wrapInSpeak("Bitte versuche es noch einmal"); 
 
-		String result = "";
+		if (intentName.equals("wahlsys")) { //intent wahlsys
+			result = Wahlsystem.getText(); // set result string
+			return newAskResponse(result, true, shortRepromptWahlsysString());
 
-		if (intentName.equals("wahlsys")) {
-			result = Wahlsystem.getText();
-
-			SpeechletResponse response = newAskResponse(result, true, shortRepromptWahlsysString());
-			// response.setShouldEndSession(true);
-			return response;
-
-		} else if (intentName.equals("zweitstimme")) {
-
+		} else if (intentName.equals("zweitstimme")) { //intent zweitstimme
+			// get slots
 			String themen = intent.getSlot("themen").getValue();
 			String partei = intent.getSlot("partei").getValue();
-
-			if ((themen != null && !themen.isEmpty()) && (partei != null && !partei.isEmpty())) {// slots
-																									// recognized
-
-				if (themes.mapping.mapCategoryToGroup.get(themen) != null) {
-
-					result = ZweitStimme.auswahl(themen, partei, themes.mapping);
-
-					SpeechletResponse response = newAskResponse(result, false, shortRepromptZweitstimmeString());
-					// response.setShouldEndSession(true);
-					return response;
-
-				} else {
-					SpeechletResponse response = newAskResponse(
-							SpeechHelper.wrapInSpeak("Bitte versuche es noch einmal"), true,
-							shortRepromptZweitstimmeString());
-					// response.setShouldEndSession(true);
-					return response;
-				}
-
-			} else {// some slot is empty
-				SpeechletResponse response = newAskResponse(SpeechHelper.wrapInSpeak("Bitte versuche es noch einmal"),
-						true, shortRepromptZweitstimmeString());
-				// response.setShouldEndSession(true);
-				return response;
+			// all slots recognized	and themen is included in themes.mapping
+			if ((themen != null && !themen.isEmpty()) && (partei != null && !partei.isEmpty()) && (themes.mapping.mapCategoryToGroup.get(themen) != null)) {
+					result = ZweitStimme.auswahl(themen, partei, themes.mapping); // set result string
 			}
+			return newAskResponse(result,true, shortRepromptZweitstimmeString());
+
 
 		} else if (intentName.equals("erststimme")) {
+			
+			// get slots
 			String themen = intent.getSlot("themen").getValue();
-			String fullname = intent.getSlot("kandidat").getValue();
-			SpeechletResponse response;
-
-			if ((themen != null && !themen.isEmpty()) && (fullname != null && !fullname.isEmpty())) {// slots
-																										// recognized
+			String candidateName = intent.getSlot("kandidat").getValue();
+			
+			// all slots recognized 																//themen is included in themes.mapping
+			if ((themen != null && !themen.isEmpty()) && (candidateName != null && !candidateName.isEmpty()) && themes.mapping.mapCategoryToGroup.get(themen) != null) {
 
 				try {
-
-					if (themes.mapping.mapCategoryToGroup.get(themen) != null) {
-
 						Parliament parliament = new Parliament();
 						parliament.setName("Bundestag");
 						Erststimme erstestimme = new Erststimme(parliament.getName(), themes.mapping);
-
-						response = newAskResponse(erstestimme.call(themen, fullname), true,
-								shortRepromptErststimmeString());
-						// response.setShouldEndSession(true);
-						return response;
-
-					} else {
-						response = newAskResponse(SpeechHelper.wrapInSpeak("Bitte versuche es noch einmal"), true,
-								shortRepromptZweitstimmeString());
-						// response.setShouldEndSession(true);
-						return response;
-					}
-
+						result= erstestimme.call(themen, candidateName); // set result string
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 
-				response = newAskResponse(SpeechHelper.wrapInSpeak("Bitte versuche es noch einmal"), true,
-						shortRepromptErststimmeString());
-				// response.setShouldEndSession(true);
+				// return result string in Speechlet
+				SpeechletResponse response = newAskResponse(result, true,shortRepromptErststimmeString());
 				return response;
 
-			} else { // some slot is empty
-
-				response = newAskResponse(SpeechHelper.wrapInSpeak("Bitte versuche es noch einmal"), true,
-						shortRepromptErststimmeString());
-				// response.setShouldEndSession(true);
-				return response;
-			}
-
+			} 
+			// some slot is empty or themen is not included in themes.mapping
+			return newAskResponse(result, true,shortRepromptErststimmeString());
+			
+			//Help String output		
 		} else if (intentName.equals("AMAZON.HelpIntent")) {
-
 			String speechOutput = "Du hast prinzipiell drei Möglichkeiten" + SpeechHelper.createBreak(1)
 					+ "Erstens kannst Du dich über das Wahlsystem in Deutschland informieren"
 					+ SpeechHelper.createBreak(1)
@@ -172,44 +124,60 @@ public class AngekreuztSpeechlet implements Speechlet {
 					+ SpeechHelper.createBreak(1)
 					+ "zum Beispiel, was denkt die Partei X oder Kandidat Y zum Thema Integration, Sicherheit, E U Aussenpolitik, Bildung, Arbeit, Finanzen und Steuern?"
 					+ SpeechHelper.createBreak(1) + "Was möchtest du wissen?";
-			String repromptText = SpeechHelper.wrapInSpeak("Bitte stelle eine Frage");
-			SpeechletResponse response = newAskResponse(SpeechHelper.wrapInSpeak(speechOutput), true, repromptText);
-			// response.setShouldEndSession(false);
-			return response;
+			return  newAskResponse(SpeechHelper.wrapInSpeak(speechOutput), true, SpeechHelper.wrapInSpeak("Bitte stelle eine Frage"));
 
+			//Stop or cancel
 		} else if (intentName.equals("AMAZON.StopIntent") || intentName.equals("AMAZON.CancelIntent")) {
-
 			PlainTextOutputSpeech outputSpeech = new PlainTextOutputSpeech();
 			outputSpeech.setText("Servus");
 			return SpeechletResponse.newTellResponse(outputSpeech);
 
-		} else {
-			String speechOutput = second + SpeechHelper.createBreak(1) + third + SpeechHelper.createBreak(1) + fourth
+		} else { // no intent recognized
+			String secondVoteString = "was denkt die Partei X zum Thema Integration,Sicherheit, E U Aussenpolitik, Bildung, Arbeit, Finanzen und Steuern?";
+			String firstVoteString = "Du kannst auch jeden Direktkandidaten zu den Themen fragen";
+			String speechOutput =  "zum Beispiel" + SpeechHelper.createBreak(1) + secondVoteString + SpeechHelper.createBreak(1) + firstVoteString
 					+ SpeechHelper.createBreak(1);
 			String repromptText = SpeechHelper.wrapInSpeak("Bitte stelle eine Frage");
 			SpeechletResponse response = newAskResponse(SpeechHelper.wrapInSpeak(speechOutput), true, repromptText);
-			// response.setShouldEndSession(true);
 			return response;
 		}
 	}
 
 	/**
 	 * Wrapper for creating the Ask response from the input strings.
-	 * 
-	 * @param stringOutput
-	 *            the output to be spoken
-	 * @param isOutputSsml
-	 *            whether the output text is of type SSML
-	 * @param repromptText
-	 *            the reprompt for if the user doesn't reply or is
-	 *            misunderstood.
-	 * @param isRepromptSsml
-	 *            whether the reprompt text is of type SSML
+	 * @param stringOutput the output to be spoken
+	 * @param isOutputSsml whether the output text is of type SSML
+	 * @param repromptTe the reprompt for if the user doesn't reply or is misunderstood.
 	 * @return SpeechletResponse the speechlet response
 	 */
 	private SpeechletResponse newAskResponse(String stringOutput, boolean isOutputSsml, String repromptText) {
-		boolean isRepromptSsml = true;
+
 		OutputSpeech outputSpeech, repromptOutputSpeech;
+		//output
+		if (isOutputSsml) { //ssml
+			outputSpeech = new SsmlOutputSpeech();
+			((SsmlOutputSpeech) outputSpeech).setSsml(stringOutput);
+		} else { //plain
+			outputSpeech = new PlainTextOutputSpeech();
+			((PlainTextOutputSpeech) outputSpeech).setText(stringOutput);
+		}
+		//reprompt
+		repromptOutputSpeech = new SsmlOutputSpeech();
+		((SsmlOutputSpeech) repromptOutputSpeech).setSsml(repromptText);
+		Reprompt reprompt = new Reprompt();
+		reprompt.setOutputSpeech(repromptOutputSpeech);
+		//return
+		return SpeechletResponse.newAskResponse(outputSpeech, reprompt);
+	}
+
+	/**
+	 * Wrapper for creating the Tell response from the input strings.
+	 * @param stringOutput the output to be spoken
+	 * @param isOutputSsml whether the output text is of type SSML
+	 * @return SpeechletResponse the speechlet response
+	 */
+	private SpeechletResponse newTellResponse(String stringOutput, boolean isOutputSsml) {
+		OutputSpeech outputSpeech;
 		if (isOutputSsml) {
 			outputSpeech = new SsmlOutputSpeech();
 			((SsmlOutputSpeech) outputSpeech).setSsml(stringOutput);
@@ -217,19 +185,9 @@ public class AngekreuztSpeechlet implements Speechlet {
 			outputSpeech = new PlainTextOutputSpeech();
 			((PlainTextOutputSpeech) outputSpeech).setText(stringOutput);
 		}
-
-		if (isRepromptSsml) {
-			repromptOutputSpeech = new SsmlOutputSpeech();
-			((SsmlOutputSpeech) repromptOutputSpeech).setSsml(repromptText);
-		} else {
-			repromptOutputSpeech = new PlainTextOutputSpeech();
-			((PlainTextOutputSpeech) repromptOutputSpeech).setText(repromptText);
-		}
-		Reprompt reprompt = new Reprompt();
-		reprompt.setOutputSpeech(repromptOutputSpeech);
-		return SpeechletResponse.newAskResponse(outputSpeech, reprompt);
+		return SpeechletResponse.newTellResponse(outputSpeech);
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -274,7 +232,6 @@ public class AngekreuztSpeechlet implements Speechlet {
 		log.info("onSessionEnded requestId={}, sessionId={}", request.getRequestId(), session.getSessionId());
 	}
 
-	public void onSessionStarted(SessionStartedRequest arg0, Session arg1) throws SpeechletException {
-	}
+	public void onSessionStarted(SessionStartedRequest arg0, Session arg1) throws SpeechletException {	}
 
 }
