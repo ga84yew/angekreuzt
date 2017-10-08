@@ -72,7 +72,7 @@ public class AngekreuztSpeechlet implements Speechlet {
 
 		if (intentName.equals("wahlsys")) { //intent wahlsys
 			result = Wahlsystem.getText(); // set result string
-			return newAskResponse(result, true, shortRepromptWahlsysString());
+			return newTellResponse(result, true);
 
 		} else if (intentName.equals("zweitstimme")) { //intent zweitstimme
 			// get slots
@@ -81,9 +81,10 @@ public class AngekreuztSpeechlet implements Speechlet {
 			// all slots recognized	and themen is included in themes.mapping
 			if ((themen != null && !themen.isEmpty()) && (partei != null && !partei.isEmpty()) && (themes.mapping.mapCategoryToGroup.get(themen) != null)) {
 					result = ZweitStimme.auswahl(themen, partei, themes.mapping); // set result string
+					return newTellResponse(result,true); // return result 
 			}
-			return newAskResponse(result,true, shortRepromptZweitstimmeString());
-
+			// some slot is empty or themen is not included in themes.mapping
+			return newAskResponse(result, true,shortRepromptZweitstimmeString());
 
 		} else if (intentName.equals("erststimme")) {
 			
@@ -104,11 +105,8 @@ public class AngekreuztSpeechlet implements Speechlet {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-
-				// return result string in Speechlet
-				SpeechletResponse response = newAskResponse(result, true,shortRepromptErststimmeString());
-				return response;
-
+				// return result 
+				return newTellResponse(result, true);
 			} 
 			// some slot is empty or themen is not included in themes.mapping
 			return newAskResponse(result, true,shortRepromptErststimmeString());
