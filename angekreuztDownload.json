@@ -15,18 +15,18 @@
     {
       "name": "erststimme",
       "samples": [
-        "was denkt {praep} {kandidat} über {praep} {themen} ",
-        "Welche Aussagen von {praep}  {kandidat} zum Thema {praep} {themen} gibt es",
-        "welche Meinung hat {praep}  {kandidat} zur {praep} {themen}",
-        "wie denkt {praep} {kandidat} über {praep} {themen}",
-        "wie denkt {kandidat} über {themen}",
-        "was sagt {kandidat} über {themen}"
+        "Welche Aussagen von {kandidat} zum Thema {praepZwei} {themen} gibt es",
+        "welche Meinung hat {kandidat} zu {praepZwei} {themen}",
+        "wie denkt {kandidat} über {praepZwei} {themen}",
+        "welche Meinung hat {kandidat} zur {themen}"
       ],
       "slots": [
         {
           "name": "themen",
           "type": "Thema",
-          "samples": []
+          "samples": [
+            "{themen}"
+          ]
         },
         {
           "name": "kandidat",
@@ -35,7 +35,12 @@
         },
         {
           "name": "praep",
-          "type": "DerDieDas",
+          "type": "Praep",
+          "samples": []
+        },
+        {
+          "name": "praepZwei",
+          "type": "Praep",
           "samples": []
         }
       ]
@@ -78,14 +83,10 @@
     {
       "name": "zweitstimme",
       "samples": [
-        "welche {themen} vertritt die {partei}",
-        "was sagt die {partei} zur {desderdemden} {themen}",
-        "was denkt die {partei} über {desderdemden} {themen}",
-        "was steht im Wahlprogramm der {partei} über {desderdemden} {themen}",
-        "wie will die partei {partei} die {themen} {verbInfinitiv}",
+        "was steht im Wahlprogramm der {partei} über {praepDrei} {themen}",
         "wie will die {partei} die {themen} {verbInfinitiv}",
-        "was will die  {partei} hinsichtlich {desderdemden} {themen} {verbInfinitiv}",
-        "was sagt die {partei} zu {desderdemden} {themen}"
+        "was sagt die {partei} zu {praepDrei} {themen}",
+        "was sagt die {partei} zur {themen}"
       ],
       "slots": [
         {
@@ -96,79 +97,24 @@
         {
           "name": "themen",
           "type": "Thema",
-          "samples": []
+          "samples": [
+            "{themen}"
+          ]
         },
         {
-          "name": "desderdemden",
-          "type": "DesDerDem",
+          "name": "praepDrei",
+          "type": "Praep",
           "samples": []
         },
         {
           "name": "verbInfinitiv",
           "type": "VerbInfinitiv",
           "samples": []
-        },
-        {
-          "name": "verbD",
-          "type": "verbD",
-          "samples": []
         }
       ]
     }
   ],
   "types": [
-    {
-      "name": "DerDieDas",
-      "values": [
-        {
-          "id": null,
-          "name": {
-            "value": "der",
-            "synonyms": []
-          }
-        },
-        {
-          "id": null,
-          "name": {
-            "value": "die",
-            "synonyms": []
-          }
-        },
-        {
-          "id": null,
-          "name": {
-            "value": "das",
-            "synonyms": []
-          }
-        }
-      ]
-    },
-    {
-      "name": "DesDerDem",
-      "values": [
-        {
-          "id": null,
-          "name": {
-            "value": "des",
-            "synonyms": []
-          }
-        },
-        {
-          "id": null,
-          "name": {
-            "value": "der",
-            "synonyms": []
-          }
-        },
-        {
-          "id": null,
-          "name": {
-            "value": "dem",
-            "synonyms": []
-          }
-        }
-      ]
-    },
     {
       "name": "Kandidat",
       "values": [
@@ -33330,13 +33276,6 @@
         {
           "id": null,
           "name": {
-            "value": "CSU",
-            "synonyms": []
-          }
-        },
-        {
-          "id": null,
-          "name": {
             "value": "FDP",
             "synonyms": []
           }
@@ -33351,13 +33290,6 @@
         {
           "id": null,
           "name": {
-            "value": "Grünen",
-            "synonyms": []
-          }
-        },
-        {
-          "id": null,
-          "name": {
             "value": "AFD",
             "synonyms": []
           }
@@ -33365,7 +33297,71 @@
         {
           "id": null,
           "name": {
-            "value": "Bündnis 90",
+            "value": "Grüne",
+            "synonyms": [
+              "Grünen",
+              "Bündnis 90"
+            ]
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "Linke",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "test",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "CSU",
+            "synonyms": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "Praep",
+      "values": [
+        {
+          "id": null,
+          "name": {
+            "value": "des",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "der",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "dem",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "die",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "das",
             "synonyms": []
           }
         }
@@ -33844,7 +33840,7 @@
         {
           "id": null,
           "name": {
-            "value": "schwächen",
+            "value": "schwächt",
             "synonyms": []
           }
         }
@@ -39756,8 +39752,118 @@
             "value": "Zweitstimme",
             "synonyms": []
           }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "wählt",
+            "synonyms": []
+          }
         }
       ]
     }
-  ]
+  ],
+  "prompts": [
+    {
+      "id": "Elicit.Intent-erststimme.IntentSlot-themen",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Welches Thema interessiert Dich"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-zweitstimme.IntentSlot-themen",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Welches Thema interessiert dich"
+        }
+      ]
+    }
+  ],
+  "dialog": {
+    "version": "1.0",
+    "intents": [
+      {
+        "name": "erststimme",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "themen",
+            "type": "Thema",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-erststimme.IntentSlot-themen"
+            }
+          },
+          {
+            "name": "kandidat",
+            "type": "Kandidat",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "praep",
+            "type": "Praep",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "praepZwei",
+            "type": "Praep",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          }
+        ]
+      },
+      {
+        "name": "zweitstimme",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "partei",
+            "type": "Parteien",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "themen",
+            "type": "Thema",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-zweitstimme.IntentSlot-themen"
+            }
+          },
+          {
+            "name": "praepDrei",
+            "type": "Praep",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "verbInfinitiv",
+            "type": "VerbInfinitiv",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          }
+        ]
+      }
+    ]
+  }
 }
