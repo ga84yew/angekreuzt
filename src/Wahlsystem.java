@@ -5,8 +5,8 @@ import org.jsoup.select.Elements;
 /**
  * The public class Wahlsystem collects information on the election process in Germany as described in URL "http://www.bundestagswahl-bw.de/wahlsystem_btw.html" by using the Jsoup package.
  * By iterating through specified indices, the class returns the desired part of the URL and sends it to the SpeechletResponse to create a speech output.
- * @author severin engelmann & rainer wichmann
- * @version 1.0
+ * @author severin engelmann , rainer wichmann
+ * @version 1.1, 13.10.2017
  *
  */
 public class Wahlsystem {
@@ -14,7 +14,6 @@ public class Wahlsystem {
 	/**
 	 * This method creates a connection to a defined URL and subsequently calls the "extractInformation" method and returns its result to create a 
 	 * speech output in the AngekreutSpeechlet class.
-	 * @throws an Exception e if the URL cannot be retrieved.
 	 * @return returns the desired part of the document as a String.
 	 */
 	public static String getText() {
@@ -32,9 +31,10 @@ public class Wahlsystem {
 	
 	/**
 	 * This method is called by the getText method. A for-loop is used to define the parts of the document to be retrieved.
-	 * @param String result, which is returned, comprises a specified part of a document's body text.
+	 * @param result String , which is returned, comprises a specified part of a document's body text.
 	 * @param doc, which is the HTML document.
-	 * @param int start and int ende, which define indices to determine the desired extract of the document. 
+	 * @param start, 
+	 * @param ende, start and ende are int, define indices to determine the desired extract of the document. 
 	 * @return returns the desired part of the document as a String.
 	 */
 	private static String extractInformation(String result, Document doc, int start, int ende) {

@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amazon.speech.slu.Intent;
+import com.amazon.speech.slu.Slot;
+import com.amazon.speech.slu.entityresolution.Resolutions;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.LaunchRequest;
 import com.amazon.speech.speechlet.Session;
@@ -23,20 +25,34 @@ import com.amazon.speech.ui.SimpleCard;
 import com.amazon.speech.ui.SsmlOutputSpeech;
 
 import parliament2profile.Parliament;
-
+/**
+ * Angekreuzt Speechlet is used by Main, which is a SpeechletRequestStreamHandler.
+ * A SpeechletRequestStreamHandler is instantiated with an instance of this Speechlet.
+ * Angekreuzt Speechlet main methods are getWelcomeResponse, onIntent, onLaunch.
+* Helper methods are newAskResponse and newTellResponse and some minor String creating methods.
+ * onLaunch starts the getWelcomeResponse.
+ * onIntent handels the recognition of intents. 
+ * The main intents are Wahlsys (explanation of german election system), Erststimme (telling about the opinions of candidates), Zweitstimmme (telling about the opinion of parties)
+ * @author Rainer Wichmann, Severin Engelmann
+ * @version 1.1, 13.10.2017
+ */
 public class AngekreuztSpeechlet implements Speechlet {
 
 	private static final Logger log = LoggerFactory.getLogger(AngekreuztSpeechlet.class);
 	
+	/**
+	 * Is started, when the Skill is started. Launches and returns the getWelcomeResponse.
+	 * @return SpeechletResponse created by getWelcomeResponse().
+	 */
 	public SpeechletResponse onLaunch(final LaunchRequest request, final Session session) throws SpeechletException {
 		log.info("onLaunch requestId={}, sessionId={}", request.getRequestId(), session.getSessionId());
 		return getWelcomeResponse();
 	}
 
 	/**
-	 * Liest einen "Willkommen bei angekreuzt"-String, wenn der User den Skill
+	 * Liest einen "Willkommen"-String, wenn der User den Skill
 	 * startet.
-	 * @return
+	 * @return a newAskResponse, aus dem willkommen-String und eiem erläuternden Reprompt.
 	 */
 	private SpeechletResponse getWelcomeResponse() {
 	String welcomeString = "Willkommen, du kannst nach Parteien, Themen und Kandidaten fragen";
@@ -53,9 +69,13 @@ public class AngekreuztSpeechlet implements Speechlet {
 	/**
 	 * Die drei unterschiedlichen Intents werden in drei Bedinungen abgefragt:
 	 * Das Intent "wahlsys" übergibt den Slottypen "wahlsystem" als String an
-	 * die Methode "auswaehlen in der Klasse "Wahlthema" und ruft diese auf.
-	 * jeder fall ruft eine eigene newAskResponse auf bei Alexa cancel oder stop
-	 * wird beendet bei Nichterkennugn wird eine Hilfestellug ausgegeben.
+	 * die Methode "auswaehlen" in der Klasse "Wahlsysthem" und ruft diese auf.
+	 * Jeder intent ruft bei Erfolg eine eigene newTellResponse auf. Die Session ist danach beendet.
+	 * Bei fehlerhafter Erkennung eines slots innerhalb eines intents wird um eine erneute Frage gebeten.
+	 * Bei fehlerhafter Erkennung eines intents wird eine Hilfestellung ausgegeben.
+	 * Bei cancel oder stop wird beendet.
+	 * Bei Help wird ein Hilfetext ausgegeben.
+	 * Bei Nichterkennung wird eine Hilfestellung ausgegeben.
 	 * 
 	 * @param arg0 IntentRequest 
 	 * @param arg1 Session
@@ -78,10 +98,18 @@ public class AngekreuztSpeechlet implements Speechlet {
 			// get slots
 			String themen = intent.getSlot("themen").getValue();
 			String partei = intent.getSlot("partei").getValue();
+			/* 	//version with slot ids
+			Slot parteiSlot = intent.getSlot("partei");
+			Resolutions res = parteiSlot.getResolutions();
+			String partei=res.getResolutionAtIndex(0).getValueWrapperAtIndex(0).getValue().getId();
+			System.out.println(partei);
+			*/
+			
+			
 			// all slots recognized	and themen is included in themes.mapping
 			if ((themen != null && !themen.isEmpty()) && (partei != null && !partei.isEmpty()) && (themes.mapping.mapCategoryToGroup.get(themen) != null)) {
 					result = ZweitStimme.auswahl(themen, partei, themes.mapping); // set result string
-					return newTellResponse(result,true); // return result 
+					return newTellResponse(result,false); // return result 
 			}
 			// some slot is empty or themen is not included in themes.mapping
 			return newAskResponse(result, true,shortRepromptZweitstimmeString());
@@ -143,9 +171,9 @@ public class AngekreuztSpeechlet implements Speechlet {
 
 	/**
 	 * Wrapper for creating the Ask response from the input strings.
-	 * @param stringOutput the output to be spoken
+	 * @param stringOutput the output to be spoken.
 	 * @param isOutputSsml whether the output text is of type SSML
-	 * @param repromptTe the reprompt for if the user doesn't reply or is misunderstood.
+	 * @param repromptText the reprompt for if the user doesn't reply or is misunderstood.
 	 * @return SpeechletResponse the speechlet response
 	 */
 	private SpeechletResponse newAskResponse(String stringOutput, boolean isOutputSsml, String repromptText) {
@@ -186,8 +214,8 @@ public class AngekreuztSpeechlet implements Speechlet {
 		return SpeechletResponse.newTellResponse(outputSpeech);
 	}
 	
-	/**
-	 * @return
+	/**creates a long Reprompt String explaining all possibilities
+	 * @return reprompt string
 	 */
 	private String longRepromptString() {
 		// Create reprompt
@@ -203,7 +231,9 @@ public class AngekreuztSpeechlet implements Speechlet {
 				+ SpeechHelper.createBreak(1) + thirdRe + SpeechHelper.createBreak(1) + fourthRe);
 		return gegenantwort;
 	}
-
+	/**creates a short Reprompt String explaining the possibilies in the intent Erststimme
+	 * @return reprompt string
+	 */
 	private String shortRepromptErststimmeString() {
 		// Create reprompt
 		String secondRe = "Möchtest Du mehr erfahren?";
@@ -211,7 +241,10 @@ public class AngekreuztSpeechlet implements Speechlet {
 		String gegenantwort = SpeechHelper.wrapInSpeak( secondRe + SpeechHelper.createBreak(1) + fourthRe);
 		return gegenantwort;
 	}
-
+	
+	/**creates a short Reprompt String explaining the possibilies in the intent  Zweitstimme
+	 * @return reprompt string
+	 */
 	private String shortRepromptZweitstimmeString() {
 		// Create reprompt
 		String secondRe = "Möchtest Du mehr erfahren?";
@@ -219,17 +252,26 @@ public class AngekreuztSpeechlet implements Speechlet {
 		String gegenantwort = SpeechHelper.wrapInSpeak( secondRe + SpeechHelper.createBreak(1) + fourthRe);
 		return gegenantwort;
 	}
-
+	
+	/**creates a short Reprompt String explaining the possibilies in the intent Wahlsys
+	 * @return reprompt string
+	 */
 	private String shortRepromptWahlsysString() {
 		String gegenantwort = SpeechHelper
 				.wrapInSpeak("Möchtes Du es noch einmal hören? " + SpeechHelper.createBreak(1) + " Dann frage nochmal nach dem Wahlsystem.");
 		return gegenantwort;
 	}
-
+	
+	/**
+	 * Session endend 
+	 */
 	public void onSessionEnded(SessionEndedRequest request, Session session) throws SpeechletException {
 		log.info("onSessionEnded requestId={}, sessionId={}", request.getRequestId(), session.getSessionId());
 	}
-
+	
+	/**
+	 * Session started 
+	 */
 	public void onSessionStarted(SessionStartedRequest arg0, Session arg1) throws SpeechletException {	}
 
 }

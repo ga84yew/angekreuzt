@@ -1,0 +1,21 @@
+
+wie denkt {kandidat} über {praepZwei} {themen}
+welche Meinung hat {kandidat} zur {praepZwei} {themen}
+welche Meinung hat {kandidat} zu{themen}
+welche Aussagen von {kandidat} zum Thema {praepZwei} {themen} gibt es
+
+"was steht im Wahlprogramm der {partei} über {praepDrei} {themen}"
+"wie will die {partei} die {themen} {verbInfinitiv}"
+"was sagt die {partei} zu {praepDrei} {themen}"
+"was sagt die {partei} zur {themen}"
+
+
+gelöscht
+was will die {partei} hinsichtlich {praepDrei} {themen} {verbInfinitiv}
+--was sagt {kandidat} über {praepZwei} {themen}--
+---"welche {themen} vertritt die {partei}"--
+--"was denkt die {partei} über {praepDrei} {themen}"---
+"was will die  {partei} hinsichtlich {praepDrei} {themen} {verbInfinitiv}"
+
+"was sagt die {partei} zur {praepDrei} {themen}"
+"wie will die partei {partei} die {themen} {verbInfinitiv}"

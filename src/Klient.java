@@ -21,10 +21,10 @@ import org.glassfish.jersey.client.ClientConfig;
 
 /**
  * accesses remote json data at abgeordnetenwatch.de for retrieving answer to a political category. 
- * common categories have a common top level Group, defined in Themen
- * A question includes answer and category according to json profile of abgeordnetenwatch.de
+ * Common categories have a common top level Group, defined in Themen.
+ * A question includes answer and category according to json profile of abgeordnetenwatch.de.
  * @author Rainer Wichmann
- * @version 1.0, 15.9.2017
+ * @version 1.1, 13.10.2017
  */
 
 public class Klient {
@@ -44,13 +44,13 @@ public class Klient {
 	public Klient(String category){	this.category=category;	}
 	
 	/**
-	 * Klient.getText() is called to return a question to the category from a profile, which is available via the String questionUrl
-	 * attributes candidateProfile, firstname and lastname are set
-	 * is asking to receive a SingleProfile from getDataUrl, uses a mapper or a client+webtarget+invocationbuilder+response 
-	 * if no answer is availabe, it asks the Caller , a Erststimme erst, via erst.noAnswer() erst.alternativeAnswerfromSpeechelper() to return an alternative answer
-	 * if erst has no alternative answer, a simple dummy answer is returned
-	 * @param questionUrl String of the url where the questions of the candidate can be found
-	 * @param erst may be used for asking for the Erststimme erst, if no answer at all is available. Not implemented yet
+	 * Klient.getText() is called to return a question to the category from a profile, which is available via the String questionUrl.
+	 * Attributes candidateProfile, firstname and lastname are set.
+	 * Is asking to receive a SingleProfile from getDataUrl, uses a mapper or a client+webtarget+invocationbuilder+response. 
+	 * If no answer is availabe, it asks the Caller , a Erststimme erst, via erst.noAnswer() erst.alternativeAnswerfromSpeechelper() to return an alternative answer.
+	 * If erst has no alternative answer, a simple dummy answer is returned.
+	 * @param questionUrl String of the url where the questions of the candidate can be found.
+	 * @param erst may be used for asking the Erststimme erst, if no answer at all is available. Not implemented yet.
 	 * @return String representing the answer
 	 * @throws IOException during json mapping in mapper.readValue
 	 * @throws JsonParseException during json mapping in mapper.readValue
@@ -139,8 +139,8 @@ public class Klient {
 	 *  and the categories contained in allAnsweredCategorys
 	 *  the first match is used, no further search for matches are done
 	 *  prior to selecting the question, it is checked, if the answer or the summary in the answer is empty
-	 * @param ArrayList<Question> allAnsweredQuestions
-	 * @param ArrayList<Question> allAnsweredCategorys
+	 * @param allAnsweredQuestions ArrayList of Questions 
+	 * @param allAnsweredCategorys ArrayListof Questions 
 	 * @return boolean, true if Question and category found and locally set
 	 */
 	private boolean alternativeQuestion(ArrayList<Question> allAnsweredQuestions,

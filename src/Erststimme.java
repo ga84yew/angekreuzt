@@ -25,15 +25,15 @@ import java.nio.file.Paths;
 
 import parliament2profile.*;
 /**
- * accesses remote  json data at abgeordnetenwatch.de or local for retrieving  information about the candidates of a parliament
- * if local, the parliament data is all contained in src/resources/parliament2profile.json
- * if remote the json file is mapped after creating the url. For creating the url the parliamentName is necessary.
- * It is possible to call the Erststimme to receive a SpeechletResponse including a answer to a political category for Alexa output
- * common category have a common top level Group. Mapping is done via class Themen, which has a GroupMapping attribute.
- * A question includes answer and category according to json profile of abgeordnetenwatch.de
- * A Klient instance is created with a subGruop and used with a url for retrieving the answer to a questions from this context.
- * @author Rainer Wichmann
- * @version 1.0, 15.9.2017
+ * accesses remote  json data at abgeordnetenwatch.de or local for retrieving  information about the candidates of a parliament.
+ * If local, the parliament data is all contained in src/resources/parliament2profile.json.
+ * If remote, the json file is mapped after creating the url. For creating the url the parliamentName is necessary.
+ * It is possible to call() the Erststimme to receive a string of an answer to a political category for Alexa output.
+ * Common category have a common top level Group. Mapping is done via class Themen, which has a GroupMapping attribute.
+ * A question includes answer and category according to json profile of abgeordnetenwatch.de.
+ * A Klient instance is created with a category and used with a url for retrieving the answer to a question concerning this category.
+ * @author Rainer Wichmann, Severin Engelmann
+ * @version 1.1, 13.10.2017
  */
 
 public class Erststimme {
@@ -97,11 +97,11 @@ public class Erststimme {
 	public Erststimme() {}
 
 	/**
-	 * Erststimme is called with 
-	 * @param category String representing context
+	 * Erststimme is called in this method to retrieve the information 
+	 * @param category String representing political category
 	 * @param candidateFullname String representing the fullname of the candidate
 	 * calls setText with the same params
-	 * @return SpeechletResponse for audio output to Alexa
+	 * @return String in ssml for audio output to Alexa
 	 */
 	public String call(String category, String candidateFullname) {
 		/* testing purpose
@@ -127,11 +127,13 @@ public class Erststimme {
 	}
 
 	/**
-	 * setText() is usable for defining the String set in a  setSsml(String s) function of a SsmlOutputSpeech variable
-	 * @param String contentOfCategory: name of category
-	 * @param String contentOfFirstname : Firstname of person in profile
-	 * @param String contentOfLastnam: Lastname of person in profile
+	 * setText() is usable for defining the String set of a SsmlOutputSpeech variable
+	 * @param candidateFullname String  of Firstname and Lastname of person in profile
 	 ** Urls are hardcoded here
+	 * @throws JsonParseException ,when Json Parsing fails
+	 * @throws JsonMappingException , when JsonMapping fails
+	 * @throws MalformedURLException , when URL is malformed
+	 * @throws IOException , IOException occurs
 	 * @return String set
 	 */
 	private String textFromProfile(String candidateFullname)
@@ -153,7 +155,7 @@ public class Erststimme {
 				}
 				// profile not found
 				if (!it.hasNext()) {
-					return SpeechHelper.wrapInSpeak(wrongname("Kandidat" + candidateFullname));
+					return SpeechHelper.wrapInSpeak(wrongName("Kandidat" + candidateFullname));
 				}
 			}
 
@@ -205,7 +207,7 @@ public class Erststimme {
 	 * @param candidateFullname String of the Full name of the candidate
 	 * @return String , which represents the explanation
 	 */
-	public String wrongname(String candidateFullname) {return candidateFullname + " wurde leider in der Datenbank des Parlaments" + parliament.getName() + " nicht gefunden.";}
+	public String wrongName(String candidateFullname) {return candidateFullname + " wurde leider in der Datenbank des Parlaments" + parliament.getName() + " nicht gefunden.";}
 	
 	/**
 	 * called to get a response, when Erststimme is askeded for a category not included in database of categories
