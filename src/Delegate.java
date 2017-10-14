@@ -1,9 +1,26 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-public class Delegate {
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+/**
+ * Delegate is used for String retrieving and manipulation
+ * @author Rainer Wichmann, Severin Engelmann
+ * @version 1.1, 13.10.2017
+ */
 
-	public static String readUrl(String urlString) throws Exception {
+
+public final class Delegate {
+
+	/**
+	 * readUrl reads all text contained in a remote URL
+	 * @param urlString String, where the file is located
+	 * @return String from the file at the url "urlString"
+	 * @throws IOException while reading with InputStream
+	 */
+	public static String readUrl(String urlString) throws IOException {
 	    BufferedReader reader = null;
 	    try {
 	        URL url = new URL(urlString);
@@ -20,6 +37,15 @@ public class Delegate {
 	            reader.close();
 	    }
 	}
+	
+	/**
+	 * converts complex Strings to simple Strings by 
+	 * -lowercase each character, 
+	 * -eliminating all non alphabetic characters, 
+	 * -trimming the output string to the smaller size
+	 * @param text input String
+	 * @return simple String
+	 */
 	public static String lowercase(String text){
 		char[] chars = text.toCharArray();
 		char[] out = new char[chars.length]; 
@@ -47,4 +73,33 @@ public class Delegate {
 	    String s =new String(out);
 	    return s.trim();
 	}
+
+	/**
+	 * converts complex Strings copied from html pages 
+	 * -using Jsoup parser
+	 * -deleting all entities in brackets
+	 * @param text input String
+	 * @return simple String
+	 */
+	public static String html2text(String text) {
+		String result= Jsoup.parse(text).text();
+		return result.replaceAll("\\((.+?)\\)", "");
+	}
+	
+	/**
+	* This method is called by the getText method. A for-loop is used to define the parts of the document to be retrieved.
+	* @param result, string which is returned, comprises a specified part of a document's body text.
+	* @param doc, which is the HTML document.
+	* @param start, int defining the starting index for extraction
+	* @param ende, int defining the ending index for extraction of the document. 
+	* @return returns the desired part of the document as a String.
+	*/
+		public static String extractInformation(String result, Document doc, int start, int ende) {
+			Elements party = doc.body().select("p.bodytext");
+			for(int index = start; index <=ende;index++) {
+				result += party.get(index).text();
+				result = result.replaceAll("\\((.+?)\\)", "");
+			}
+			return result;
+		}
 }

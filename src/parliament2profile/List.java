@@ -89,7 +89,7 @@ public class List {
      * The position schema
      * <p>
      * An explanation about the purpose of this instance.
-     * 
+     * @param position input position
      */
     @JsonProperty("position")
     public void setPosition(String position) {

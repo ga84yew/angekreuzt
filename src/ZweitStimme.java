@@ -3,44 +3,52 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
+/**
+ * This public class is used to determine the party's opinion concerning a political category.
+ * Input given are category, party and a mapping possibility.
+ * The category, e.g. Steuern, is mapped to a group, e.g. SteuernundFinanzen.
+ * Consequently, it passes on the name of the party (String partei) to the appropriate topic class of the group. 
+ * @author severin engelmann and rainer wichmann
+ * @version 1.1, 13.10.2017
+ */
 public class ZweitStimme {
-	public static String auswahl(String themen, String partei) {
-		String result = "";	
-	ArrayList<String> finanzen = new ArrayList<String>();
-	finanzen.addAll(Arrays.asList("Finanzen", "Steuern", "Finanzpolitik", "Steuerpolitik", "Steuer", "Wirtschaft", "Verbraucherschutz", 
-			"Verkehr und Infrastruktur", "Städtebau"));
-	if (finanzen.contains(themen)) {
-		result = SteuernundFinanzen.getText(partei);
-	}	
-	ArrayList<String> sicherheit = new ArrayList<String>();
-	sicherheit.addAll(Arrays.asList("innere Sicherheit", "Militär", "Demokratie", "Terror", "Bundeswehr", "Verteidigung", "Schutz der Bevölkerung"));
-	if (sicherheit.contains(themen)) {
-		result = Sicherheit.getText(partei);
-	}
-	ArrayList<String> bildung = new ArrayList<String>();
-	bildung.addAll(Arrays.asList("Bildung", "Digitalisierung", "Kita", "Kindergarten", "Schulbildung", 
-			"Schule", "Ausbildung", "Universität", "Forschung", "Schulsystem", "Hochschule", "Studium", "Kultur", "Kinder", "Jugend"));
-	if (bildung.contains(themen)) {
-		result = Bildung.getText(partei);	
-	}
-	ArrayList<String> arbeitundsoziales = new ArrayList<String>();
-	arbeitundsoziales.addAll(Arrays.asList("Arbeit", "Arbeitslosigkeit", "Familenpolitik", "Familie", "Kinder", "Kindergeld", 
-			"Arbeitslosengeld", "Eltern","Frauen", "Rente", "Krankenversicherung", "Gesundheit", "Rentenversicherung", "Ehe"));
-	if (arbeitundsoziales.contains(themen)) {
-		result = ArbeitundSoziales.getText(partei);
-	}
-	List<String> euundaussenpolitik = new ArrayList<String>();
-	euundaussenpolitik.addAll(Arrays.asList("Europa", "euroäische Union", "Ausland", "Auslandspolitik","EU", "Russland", "USA", 
-			"Amerika", "Aussenpolitik", "Türkei", "Internationales"));
-	if (euundaussenpolitik.contains(themen)) {
-		result = EUundAussenpolitik.getText(partei);
-	}
-	ArrayList<String> integrationundasyl = new ArrayList<String>();
-	integrationundasyl.addAll(Arrays.asList("Integration", "Asyl", "Flüchtlinge", "Immigration", "Einwanderung", 
-			"Asylbewerber", "Einwanderungspolitik"));
-	if (integrationundasyl.contains(themen)) {
-		result = IntegrationundAsyl.getText(partei);
-	}
+	
+	 //mapping of categorys to top level groups	
+	private static CaseInsensitiveMap<String, String> mapCategoryToGroup;
+		
+	/**
+	 * The method auswahl receives the two parameters category and partei, which are defined slots in the alexa skill builder. 
+	 * For each political top level group, a list contains certain categorys values, representing members of the Group. 
+	 * The method thus checks whether the input category is included in one of the specified.
+	 * Groups. It selects the Group name String and checks if it is equal to any of some Strings representing the name of the Groups.
+	 * If it equals, the value of partei is passed to the corresponding class, that delivers the opinion of the party to the group topic. 
+	 * @param category selected category by user.
+	 * The value of category is taken from the slot thema in Alexa.
+	 * As defined in Amazon Developer portal, thema depends on a slot type called Thema.
+	 * Slot type Thema contains a collection of String values used in request utterances. 
+	 * @param partei selected party by user.
+	 * If the method finds a match of the category in the mapping, it calls the getText method of the appropriate 
+	 * group class and passes the name of the party as a String.
+	 * @param mapping GroupMapping enabling to find the top level issue group of a category.
+	 * GetText is meant to retrieve the correct opinion of the party partei from the defined source
+	 * @return a text string, representing the opinion of the party partei to the topic category.
+	 */
+	public static String auswahl(String category, String partei,GroupMapping mapping) {
+	String result = "";	//result STring
+		
+	System.out.println(category);
+	// get group of thema
+	mapCategoryToGroup =mapping.mapCategoryToGroup; // get mapping Category to group
+	String group= mapCategoryToGroup.get(category); // retrieve from map
+	
+	if(group.equals(("finanzen"))){result = SteuernundFinanzen.getText(partei);}
+	else if(group.equals(("sicherheit"))){	result = Sicherheit.getText(partei);}
+	else if(group.equals(("bildung"))){	result = Bildung.getText(partei);}
+	else if(group.equals(("arbeitundsoziales"))){	result = ArbeitundSoziales.getText(partei);}
+	else if(group.equals(("euundaussenpolitik"))){	result = EUundAussenpolitik.getText(partei);}
+	else if(group.equals(("integrationundasyl"))){	result = IntegrationundAsyl.getText(partei);}
+	
 	return result;
 }
 }
